@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet"/>
+<title>Lectura Comprensiva</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+  :root {
+    --primary-color: #0c7ff2;
+    --secondary-color: #f0f2f5;
+    --text-primary: #111418;
+    --text-secondary: #60758a;
+    --background-light: #ffffff;
+    --border-color: #dbe0e6;
+    --highlight-correct: #FFFBEB;
+    --highlight-omission: #FFF3E0;
+  }
+  .word { padding: 0.125rem 0.25rem; margin:0.125rem; border-radius:0.25rem; display:inline-block; }
+  .correct { background-color: var(--highlight-correct); }
+  .omission { background-color: var(--highlight-omission); }
+</style>
+</head>
+<body class="bg-[var(--background-light)]" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[var(--border-color)] px-6 sm:px-10 py-4 bg-white shadow-sm">
+  <div class="flex items-center gap-3 text-[var(--text-primary)]">
+    <div class="size-6 text-[var(--primary-color)]">
+      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"/></svg>
+    </div>
+    <h2 class="text-xl font-bold">EduRead</h2>
+  </div>
+</header>
+<main class="flex flex-1 justify-center py-8 px-4 sm:px-8">
+  <div class="flex flex-col w-full max-w-3xl bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+    <h1 class="text-2xl font-bold mb-4 text-[var(--text-primary)]">Lectura Comprensiva</h1>
+    <select id="selector" class="border p-2 mb-4 w-full"></select>
+    <p id="texto" class="text-lg leading-relaxed mb-6"></p>
+    <div class="flex gap-4">
+      <button id="iniciar" class="flex items-center justify-center rounded-lg h-10 px-6 bg-white text-[var(--primary-color)] border border-[var(--primary-color)]">Iniciar Lectura</button>
+      <button id="finalizar" class="hidden flex items-center justify-center rounded-lg h-10 px-6 bg-white text-[var(--primary-color)] border border-[var(--primary-color)]">Finalizar</button>
+      <a id="descargar" class="hidden flex items-center justify-center rounded-lg h-10 px-6 bg-white text-[var(--primary-color)] border border-[var(--primary-color)]" href="#">Descargar Audio</a>
+    </div>
+  </div>
+</main>
+</div>
+<script>
+const textosBase=[{titulo:'Martin Fierro',rango:'7-8',contenido:'Aqui me pongo a cantar al compás de la vigüela, que el hombre que lo desvela una pena extraordinaria.'}];
+const textosExtra=JSON.parse(localStorage.getItem('textos')||'[]');
+const textos=[...textosBase,...textosExtra];
+const selector=document.getElementById('selector');
+textos.forEach((t,i)=>{const o=document.createElement('option');o.value=i;o.textContent=t.titulo;selector.appendChild(o);});
+let indice=0;let palabras=[];let rec;let recorder;let audioChunks=[];
+function cargarTexto(idx){
+  const t=textos[idx];
+  const cont=document.getElementById('texto');
+  cont.innerHTML='';
+  t.contenido.split(/\s+/).forEach(w=>{const s=document.createElement('span');s.className='word';s.textContent=w;cont.appendChild(s);cont.append(' ');});
+  palabras=Array.from(cont.querySelectorAll('.word'));indice=0;
+}
+selector.addEventListener('change',e=>cargarTexto(e.target.value));
+cargarTexto(0);
+function iniciar() {
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    recorder = new MediaRecorder(stream);
+    recorder.ondataavailable=e=>audioChunks.push(e.data);
+    recorder.start();
+    iniciarReconocimiento();
+  });
+}
+function iniciarReconocimiento(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){alert('No soportado'); return;}
+  rec = new SR();
+  rec.lang='es-ES';
+  rec.continuous=true;
+  rec.onresult=e=>{
+    const txt=e.results[e.results.length-1][0].transcript.trim().toLowerCase();
+    const actual=palabras[indice];
+    if(!actual) return;
+    if(txt.includes(actual.textContent.toLowerCase().replace(/\./g,''))){
+      actual.classList.add('correct');
+      indice++;}
+  };
+  rec.start();
+}
+function detener(){
+  if(rec) rec.stop();
+  if(recorder){
+    recorder.stop();
+    recorder.onstop=()=>{
+      const blob=new Blob(audioChunks,{type:'audio/webm'});
+      const url=URL.createObjectURL(blob);
+      const enlace=document.getElementById('descargar');
+      enlace.href=url;
+      enlace.download='lectura.webm';
+      enlace.classList.remove('hidden');
+      const sesiones=JSON.parse(localStorage.getItem('sesiones')||'[]');
+      sesiones.push({fecha:new Date().toLocaleString(),modo:'lectura',detalle:`${palabras.length} palabras`});
+      localStorage.setItem('sesiones',JSON.stringify(sesiones));
+    };
+  }
+}
+document.getElementById('iniciar').addEventListener('click',()=>{
+  document.getElementById('iniciar').classList.add('hidden');
+  document.getElementById('finalizar').classList.remove('hidden');
+  iniciar();
+});
+document.getElementById('finalizar').addEventListener('click',()=>{
+  document.getElementById('finalizar').classList.add('hidden');
+  detener();
+});
+</script>
+</body>
+</html>

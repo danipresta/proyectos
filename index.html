@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<title>EduRead - Menú Principal</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-color: #0c7ff2;
+        --secondary-color: #f0f2f5;
+        --text-primary: #111418;
+        --text-secondary: #60758a;
+        --background-light: #ffffff;
+        --background-accent: #e6f2ff;
+      }
+      .btn-primary {
+        @apply bg-[var(--primary-color)] text-white hover:bg-blue-700 transition-colors duration-300 ease-in-out;
+      }
+      .btn-secondary {
+        @apply bg-[var(--secondary-color)] text-[var(--text-primary)] hover:bg-gray-200 transition-colors duration-300 ease-in-out;
+      }
+      .card-hover {
+        @apply hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out;
+      }
+    </style>
+</head>
+<body class="bg-[var(--background-light)]" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[var(--secondary-color)] bg-[var(--background-light)] px-6 sm:px-10 py-4 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="size-8 text-[var(--primary-color)]">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"></path>
+</svg>
+</div>
+<h1 class="text-[var(--text-primary)] text-2xl font-bold leading-tight tracking-[-0.015em]">EduRead</h1>
+</div>
+<div class="flex items-center gap-4">
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="#">Inicio</a>
+<a class="text-[var(--primary-color)] text-sm font-bold leading-normal" href="#">Juegos</a>
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="recursos.html">Recursos</a>
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="progreso.html">Mi progreso</a>
+</nav>
+<button aria-label="Notificaciones" class="flex items-center justify-center rounded-full h-10 w-10 btn-secondary">
+<span class="material-symbols-outlined text-[var(--text-primary)] text-2xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-[var(--primary-color)] shadow-sm" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDLa-Dqx0OJOQCw12zF96RFEDwsEEfIzuKSqjCJR2KNzd--7BhhXxgla6PcPGUJrT4KBC4VSstNXr-0Cg3lmS8qq9MZEVLEnW4PujDDBs8c58neiKMkuaXuIvfcwteIstdxxT-0eQUP3nUBTogn8xIOWhxR2RDuhbDstiDHP4nEvfX5LaksJ-2Uq6TNVsyJGZzk4SfjjHgGJBaee9tkbUb7koORT12UXfwkwfZA49InMNRsyAx4TPDl_00-pH7AXEE94tA-1-jIWptX");'></div>
+<button aria-label="Menú" class="md:hidden flex items-center justify-center rounded-full h-10 w-10 btn-secondary">
+<span class="material-symbols-outlined text-[var(--text-primary)] text-2xl">menu</span>
+</button>
+</div>
+</header>
+<main class="flex flex-1 flex-col items-center justify-center py-10 px-4 sm:px-8 bg-gradient-to-br from-[var(--background-light)] to-[var(--background-accent)]">
+<div class="layout-content-container flex flex-col w-full max-w-4xl items-center">
+<h2 class="text-[var(--text-primary)] tracking-tight text-3xl sm:text-4xl font-bold leading-tight text-center pb-8 pt-6">
+              ¿Qué actividad te gustaría realizar hoy?
+            </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 w-full">
+<a id="quickLink" class="flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-xl bg-[var(--background-light)] shadow-lg card-hover group" href="quick.html">
+<span class="material-symbols-outlined text-5xl sm:text-6xl text-[var(--primary-color)] mb-4 group-hover:animate-bounce">rocket_launch</span>
+<h3 class="text-lg sm:text-xl font-semibold text-[var(--text-primary)] mb-2">Juego de Rapidez</h3>
+<p class="text-sm text-[var(--text-secondary)]">Pon a prueba tu velocidad y precisión lectora.</p>
+</a>
+<a class="flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-xl bg-[var(--background-light)] shadow-lg card-hover group" href="comprehension.html">
+<span class="material-symbols-outlined text-5xl sm:text-6xl text-[var(--primary-color)] mb-4 group-hover:animate-bounce">auto_stories</span>
+<h3 class="text-lg sm:text-xl font-semibold text-[var(--text-primary)] mb-2">Lectura Comprensiva</h3>
+<p class="text-sm text-[var(--text-secondary)]">Lee textos interesantes y demuestra cuánto entendiste.</p>
+</a>
+<a class="flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-xl bg-[var(--background-light)] shadow-lg card-hover group" href="karaoke.html">
+<span class="material-symbols-outlined text-5xl sm:text-6xl text-[var(--primary-color)] mb-4 group-hover:animate-bounce">mic</span>
+<h3 class="text-lg sm:text-xl font-semibold text-[var(--text-primary)] mb-2">Karaoke Lector</h3>
+<p class="text-sm text-[var(--text-secondary)]">Diviértete leyendo en voz alta al ritmo de la música.</p>
+</a>
+</div>
+</div>
+</main>
+<footer class="py-8 bg-[var(--secondary-color)]">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<p class="text-[var(--text-secondary)] text-sm font-normal leading-normal text-center">© 2024 EduRead. Todos los derechos reservados.</p>
+</div>
+</footer>
+</div>
+</div>
+
+<!-- Onboarding Overlay -->
+<div id="onboarding" class="fixed inset-0 flex items-center justify-center bg-black/50 hidden">
+  <div class="bg-white p-6 rounded shadow text-center w-80 space-y-4">
+    <h1 class="text-xl font-bold">Bienvenido</h1>
+    <input id="nombre" type="text" placeholder="Nombre" class="w-full border p-2" />
+    <input id="edad" type="number" placeholder="Edad" class="w-full border p-2" />
+    <button id="continuar" class="btn-primary w-full py-2 rounded">Continuar</button>
+  </div>
+</div>
+
+<script>
+const onboarding = document.getElementById('onboarding');
+const nombreInput = document.getElementById('nombre');
+const edadInput = document.getElementById('edad');
+
+function mostrarOnboarding() {
+  onboarding.classList.remove('hidden');
+}
+function ocultarOnboarding() {
+  onboarding.classList.add('hidden');
+}
+
+const nombreGuardado = localStorage.getItem('nombreAlumno');
+const edadGuardada = localStorage.getItem('edadAlumno');
+if (!nombreGuardado || !edadGuardada) {
+  mostrarOnboarding();
+}
+
+document.getElementById('continuar').addEventListener('click', () => {
+  const nombre = nombreInput.value.trim();
+  const edad = parseInt(edadInput.value.trim(), 10);
+  if (nombre && Number.isInteger(edad) && edad > 0) {
+    localStorage.setItem('nombreAlumno', nombre);
+    localStorage.setItem('edadAlumno', edad);
+    ocultarOnboarding();
+  }
+});
+document.getElementById('quickLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  window.open('quick.html', 'rapidez', 'width=900,height=600');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Progreso del Alumno</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+  :root { --primary-color:#0c7ff2; --secondary-color:#f0f2f5; --text-primary:#111418; --text-secondary:#60758a; }
+  body{font-family:'Lexend',"Noto Sans",sans-serif;}
+</style>
+</head>
+<body class="bg-[var(--secondary-color)] text-[var(--text-primary)]">
+<div class="min-h-screen flex flex-col items-center py-8">
+<h1 class="text-2xl font-bold mb-4">Mi Progreso</h1>
+<div id="lista" class="w-full max-w-xl space-y-4"></div>
+<p class="mt-6"><a href="index.html" class="text-blue-600">Volver al menú</a></p>
+</div>
+<script>
+const cont=document.getElementById('lista');
+const sesiones=JSON.parse(localStorage.getItem('sesiones')||'[]');
+if(sesiones.length===0){cont.textContent='Aún no hay datos.';}
+else{
+  sesiones.forEach(s=>{
+    const div=document.createElement('div');
+    div.className='bg-white p-4 rounded shadow';
+    div.textContent=`${s.fecha}: modo ${s.modo} - ${s.detalle}`;
+    cont.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Recursos del Docente</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+  :root { --primary-color:#0c7ff2; --secondary-color:#f0f2f5; --text-primary:#111418; --text-secondary:#60758a; }
+  body{font-family:'Lexend',"Noto Sans",sans-serif;}
+</style>
+</head>
+<body class="bg-[var(--secondary-color)] text-[var(--text-primary)]">
+<div class="min-h-screen flex flex-col items-center py-8">
+<h1 class="text-2xl font-bold mb-4">Administrar Recursos</h1>
+<div class="bg-white rounded-lg shadow p-6 w-full max-w-xl space-y-6">
+  <section>
+    <h2 class="font-semibold mb-2">Agregar Lista de Palabras</h2>
+    <input id="tema" type="text" placeholder="Tema" class="border p-2 w-full mb-2"/>
+    <textarea id="lista" rows="3" placeholder="palabra1,palabra2" class="border p-2 w-full"></textarea>
+    <button id="guardarLista" class="mt-2 px-4 py-2 bg-[var(--primary-color)] text-white rounded">Guardar Lista</button>
+  </section>
+  <section>
+    <h2 class="font-semibold mb-2">Agregar Texto</h2>
+    <input id="titulo" type="text" placeholder="Título" class="border p-2 w-full mb-2"/>
+    <select id="rango" class="border p-2 w-full mb-2">
+      <option value="5-6">5-6 años</option>
+      <option value="7-8">7-8 años</option>
+      <option value="9-10">9-10 años</option>
+      <option value="+10">+10 años</option>
+    </select>
+    <textarea id="contenido" rows="4" class="border p-2 w-full mb-2" placeholder="Texto..."></textarea>
+    <button id="guardarTexto" class="px-4 py-2 bg-[var(--primary-color)] text-white rounded">Guardar Texto</button>
+  </section>
+  <section>
+    <h2 class="font-semibold mb-2">Mis Listas</h2>
+    <div id="listas" class="space-y-2"></div>
+  </section>
+</div>
+<p class="mt-6"><a href="index.html" class="text-blue-600">Volver al menú</a></p>
+</div>
+<script>
+function guardarLista(){
+  const tema=document.getElementById('tema').value.trim();
+  const lista=document.getElementById('lista').value.trim();
+  if(!tema||!lista)return;
+  const palabras=lista.split(',').map(w=>w.trim()).filter(Boolean);
+  const data=JSON.parse(localStorage.getItem('listasPalabras')||'{}');
+  data[tema]=palabras;
+  localStorage.setItem('listasPalabras',JSON.stringify(data));
+  alert('Lista guardada');
+  document.getElementById('tema').value='';
+  document.getElementById('lista').value='';
+  mostrarListas();
+}
+function guardarTexto(){
+  const titulo=document.getElementById('titulo').value.trim();
+  const rango=document.getElementById('rango').value;
+  const contenido=document.getElementById('contenido').value.trim();
+  if(!titulo||!contenido)return;
+  const textos=JSON.parse(localStorage.getItem('textos')||'[]');
+  textos.push({titulo,rango,contenido});
+  localStorage.setItem('textos',JSON.stringify(textos));
+  alert('Texto guardado');
+  document.getElementById('titulo').value='';
+  document.getElementById('contenido').value='';
+}
+document.getElementById('guardarLista').addEventListener('click',guardarLista);
+document.getElementById('guardarTexto').addEventListener('click',guardarTexto);
+
+function mostrarListas(){
+  const cont=document.getElementById('listas');
+  cont.innerHTML='';
+  const data=JSON.parse(localStorage.getItem('listasPalabras')||'{}');
+  Object.keys(data).forEach(t=>{
+    const div=document.createElement('div');
+    div.className='flex justify-between items-center border p-2 rounded';
+    const span=document.createElement('span');
+    span.textContent=t;
+    const btn=document.createElement('button');
+    btn.textContent='Copiar';
+    btn.className='px-2 py-1 text-sm bg-[var(--primary-color)] text-white rounded';
+    btn.addEventListener('click',()=>{
+      navigator.clipboard.writeText(data[t].join(', '));
+    });
+    div.appendChild(span);
+    div.appendChild(btn);
+    cont.appendChild(div);
+  });
+}
+
+mostrarListas();
+</script>
+</body>
+</html>

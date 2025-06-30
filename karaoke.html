@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend:wght@400;500;600;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Karaoke Lector</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+  :root {
+    --primary-color: #0c7ff2;
+    --secondary-color: #f0f2f5;
+    --text-primary: #111418;
+    --text-secondary: #525866;
+    --highlight-correct: #FFFBEB;
+    --highlight-omission: #FFF3E0;
+  }
+  .word { padding:0.125rem 0.25rem; margin:0.125rem; border-radius:0.25rem; transition:background-color 0.3s ease-in-out; display:inline-block; }
+  .correct { background-color: var(--highlight-correct); }
+  .omission { background-color: var(--highlight-omission); }
+</style>
+</head>
+<body class="bg-gray-50 text-[var(--text-primary)]" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--secondary-color)] bg-white px-6 sm:px-10 py-4 shadow-sm">
+  <div class="flex items-center gap-3 text-[var(--text-primary)]">
+    <div class="size-7 text-[var(--primary-color)]">
+      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"/></svg>
+    </div>
+    <h1 class="text-xl font-bold tracking-tight">EduRead</h1>
+  </div>
+</header>
+<main class="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40 flex flex-1 justify-center py-8">
+  <div class="layout-content-container flex flex-col w-full max-w-4xl bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-4 border-b border-[var(--secondary-color)]">
+      <h2 class="text-2xl sm:text-3xl font-bold">Karaoke Lector</h2>
+    </div>
+    <p class="text-lg sm:text-xl font-normal leading-relaxed sm:leading-loose">
+      <!-- Fragmento de "Manuelita la tortuga" de María Elena Walsh -->
+      <span class="word">Manuelita,</span> <span class="word">vivía</span> <span class="word">en</span> <span class="word">Pehuajó,</span> <span class="word">pero</span> <span class="word">un</span> <span class="word">día</span> <span class="word">se</span> <span class="word">marchó.</span>
+      <br/>
+      <span class="word">A</span> <span class="word">París</span> <span class="word">se</span> <span class="word">fue</span> <span class="word">a</span> <span class="word">probar</span> <span class="word">un</span> <span class="word">poquito</span> <span class="word">de</span> <span class="word">rouge.</span>
+    </p>
+    <div class="mt-8 pt-6 border-t border-[var(--secondary-color)] flex justify-end">
+      <button class="bg-[var(--primary-color)] text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-blue-600 transition-colors shadow-md">Finalizar Lectura</button>
+    </div>
+  </div>
+</main>
+<footer class="bg-white border-t border-[var(--secondary-color)] py-6 px-10 text-center mt-auto">
+  <p class="text-sm text-[var(--text-secondary)]">© 2024 EduRead. Todos los derechos reservados.</p>
+</footer>
+</div>
+</body>
+</html>
