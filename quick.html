@@ -19,6 +19,7 @@
     --border-color: #dbe0e6;
     --accent-green: #10b981;
     --accent-orange: #f97316;
+    --accent-yellow: #f59e0b;
   }
   body {
     font-family: 'Lexend', "Noto Sans", sans-serif;
@@ -109,7 +110,7 @@
   <span>Incorrectas: <span id="incorr">0</span></span>
   <span>Tiempo: <span id="tiempo">0</span>s</span>
 </div>
-<div id="juego" class="relative w-full h-52 overflow-hidden border-t border-[var(--border-color)] hidden"></div>
+<div id="juego" class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden hidden"></div>
 <div id="resultado" class="p-6 font-semibold"></div>
 <div id="feedback" class="bg-white shadow rounded-b-xl p-4 mt-4 hidden">
   <h3 class="text-lg font-semibold text-[var(--text-primary-color)] mb-3">Tu Retroalimentación</h3>
