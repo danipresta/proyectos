@@ -36,14 +36,11 @@
     <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-4 border-b border-[var(--secondary-color)]">
       <h2 class="text-2xl sm:text-3xl font-bold">Karaoke Lector</h2>
     </div>
-    <p class="text-lg sm:text-xl font-normal leading-relaxed sm:leading-loose">
-      <!-- Fragmento de "Manuelita la tortuga" de María Elena Walsh -->
-      <span class="word">Manuelita,</span> <span class="word">vivía</span> <span class="word">en</span> <span class="word">Pehuajó,</span> <span class="word">pero</span> <span class="word">un</span> <span class="word">día</span> <span class="word">se</span> <span class="word">marchó.</span>
-      <br/>
-      <span class="word">A</span> <span class="word">París</span> <span class="word">se</span> <span class="word">fue</span> <span class="word">a</span> <span class="word">probar</span> <span class="word">un</span> <span class="word">poquito</span> <span class="word">de</span> <span class="word">rouge.</span>
-    </p>
-    <div class="mt-8 pt-6 border-t border-[var(--secondary-color)] flex justify-end">
-      <button class="bg-[var(--primary-color)] text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-blue-600 transition-colors shadow-md">Finalizar Lectura</button>
+    <select id="cancion" class="border p-2 mb-4 w-full"></select>
+    <p id="letra" class="text-lg sm:text-xl font-normal leading-relaxed sm:leading-loose"></p>
+    <div class="mt-8 pt-6 border-t border-[var(--secondary-color)] flex justify-end gap-4">
+      <button id="iniciar" class="bg-[var(--primary-color)] text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-blue-600 transition-colors shadow-md">Iniciar</button>
+      <button id="finalizar" class="hidden bg-[var(--primary-color)] text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-blue-600 transition-colors shadow-md">Finalizar</button>
     </div>
   </div>
 </main>
@@ -51,5 +48,58 @@
   <p class="text-sm text-[var(--text-secondary)]">© 2024 EduRead. Todos los derechos reservados.</p>
 </footer>
 </div>
+<script>
+if(!localStorage.getItem('micTested')){
+  window.location.href='microfono.html';
+}
+const canciones=[
+  {titulo:'Manuelita la tortuga',
+   letra:'Manuelita, viv\u00eda en Pehuaj\u00f3, pero un d\u00eda se march\u00f3. A Par\u00eds se fue a probar un poquito de rouge.'},
+  {titulo:'Los Pollitos',
+   letra:'Los pollitos dicen p\u00edo p\u00edo p\u00edo cuando tienen hambre cuando tienen fr\u00edo.'}
+];
+const select=document.getElementById('cancion');
+canciones.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c.titulo;select.appendChild(o);});
+const letraCont=document.getElementById('letra');
+let palabras=[];let indice=0;let rec;
+function cargar(idx){
+  const text=canciones[idx].letra.split(/\s+/);
+  letraCont.innerHTML='';
+  text.forEach(w=>{const s=document.createElement('span');s.className='word';s.textContent=w;letraCont.appendChild(s);letraCont.append(' ');});
+  palabras=Array.from(letraCont.querySelectorAll('.word'));indice=0;
+}
+select.addEventListener('change',e=>cargar(e.target.value));
+cargar(0);
+function iniciar(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('No soportado');return;}
+  rec=new SR();rec.lang='es-ES';rec.continuous=true;
+  rec.onresult=e=>{
+    const t=e.results[e.results.length-1][0].transcript.toLowerCase();
+    for(let i=indice;i<palabras.length;i++){
+      const w=palabras[i].textContent.toLowerCase().replace(/[.,]/g,'');
+      if(t.includes(w)){
+        for(let j=indice;j<i;j++) palabras[j].classList.add('omission');
+        palabras[i].classList.add('correct');
+        indice=i+1;break;
+      }
+    }
+  };
+  rec.start();
+}
+function detener(){
+  if(rec) rec.stop();
+  for(let i=indice;i<palabras.length;i++) palabras[i].classList.add('omission');
+}
+document.getElementById('iniciar').addEventListener('click',()=>{
+  document.getElementById('iniciar').classList.add('hidden');
+  document.getElementById('finalizar').classList.remove('hidden');
+  iniciar();
+});
+document.getElementById('finalizar').addEventListener('click',()=>{
+  document.getElementById('finalizar').classList.add('hidden');
+  detener();
+});
+</script>
 </body>
 </html>
