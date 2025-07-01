@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
 <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
 <title>Juego de Rapidez</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <style type="text/tailwindcss">
@@ -33,6 +33,23 @@
   .radio-label-icon {@apply mr-2 text-lg;}
   .section-title {@apply text-[var(--text-primary-color)] text-xl font-semibold leading-tight tracking-tight px-4 pb-3 pt-6 border-b border-[var(--border-color)] mb-4;}
   .settings-card {@apply bg-[var(--card-background-color)] rounded-xl shadow-lg overflow-hidden;}
+  .material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+  }
 </style>
 <style>
 @keyframes mover-izq {from {transform: translateX(100%);} to {transform: translateX(-100%);}}
@@ -47,27 +64,27 @@
 .animate-word-incorrect { animation: moveWord var(--duracion,5s) linear forwards; color: var(--accent-orange); }
 </style>
 </head>
-<body>
+<body class="bg-gray-50" style="font-family: Lexend, 'Noto Sans', sans-serif;">
 <div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
 <div class="flex h-full grow flex-col">
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--border-color)] bg-white px-6 sm:px-10 py-4 shadow-sm">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--secondary-color)] bg-white px-6 md:px-10 py-3 shadow-sm">
   <div class="flex items-center gap-3 text-[var(--primary-color)]">
-    <div class="size-7">
+    <div class="size-7 text-[var(--primary-color)]">
       <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"/></svg>
     </div>
     <h2 class="text-[var(--text-primary-color)] text-xl font-bold leading-tight tracking-[-0.015em]">EduRead</h2>
   </div>
   <div class="flex items-center gap-6">
-    <nav class="hidden sm:flex items-center gap-6">
+    <nav class="hidden md:flex items-center gap-6">
       <a class="nav-link" href="index.html">Inicio</a>
       <a class="nav-link nav-link-active" href="#">Juegos</a>
       <a class="nav-link" href="#">Recursos</a>
       <a class="nav-link" href="#">Mi progreso</a>
     </nav>
-    <button class="sm:hidden text-[var(--text-secondary-color)]"><span class="material-icons-outlined text-3xl">menu</span></button>
+    <button class="sm:hidden text-[var(--text-secondary-color)]"><span class="material-icons text-3xl">menu</span></button>
   </div>
 </header>
-<main class="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 sm:py-12">
+<main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
 <div class="settings-card w-full max-w-2xl">
 <div id="config" class="p-6 sm:p-8 border-b border-[var(--border-color)]">
   <h1 class="text-[var(--text-primary-color)] tracking-tight text-2xl sm:text-3xl font-bold leading-tight">Ajustes del Juego de Rapidez</h1>
@@ -75,7 +92,7 @@
 </div>
 <div class="p-6 sm:p-8 space-y-6">
   <section>
-    <h3 class="section-title"><span class="material-icons-outlined align-bottom mr-2 text-[var(--primary-color)]">speed</span>Velocidad</h3>
+    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">speed</span>Velocidad</h3>
     <select id="velocidad" class="border px-3 py-2 rounded w-full">
       <option value="8">Lenta</option>
       <option value="5" selected>Normal</option>
@@ -83,26 +100,26 @@
     </select>
   </section>
   <section>
-    <h3 class="section-title"><span class="material-icons-outlined align-bottom mr-2 text-[var(--primary-color)]">swap_horiz</span>Dirección</h3>
+    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">swap_horiz</span>Dirección</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <label class="radio-label"><span class="material-icons-outlined radio-label-icon">arrow_forward</span>Izquierda a derecha<input checked type="radio" name="direccion" value="mover-der" class="invisible absolute"/></label>
-      <label class="radio-label"><span class="material-icons-outlined radio-label-icon">arrow_back</span>Derecha a izquierda<input type="radio" name="direccion" value="mover-izq" class="invisible absolute"/></label>
+      <label class="radio-label"><span class="material-icons radio-label-icon">arrow_forward</span>Izquierda a derecha<input checked type="radio" name="direccion" value="mover-der" class="invisible absolute"/></label>
+      <label class="radio-label"><span class="material-icons radio-label-icon">arrow_back</span>Derecha a izquierda<input type="radio" name="direccion" value="mover-izq" class="invisible absolute"/></label>
     </div>
   </section>
   <section>
-    <h3 class="section-title"><span class="material-icons-outlined align-bottom mr-2 text-[var(--primary-color)]">category</span>Temática</h3>
+    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">category</span>Temática</h3>
     <select id="tema" class="border p-2 rounded w-full"></select>
   </section>
   <section>
-    <h3 class="section-title"><span class="material-icons-outlined align-bottom mr-2 text-[var(--primary-color)]">straighten</span>Extensión</h3>
+    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">straighten</span>Extensión</h3>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <label class="radio-label"><span class="material-icons-outlined radio-label-icon">short_text</span>Cortas<input checked type="radio" name="extension" value="cortas" class="invisible absolute"/></label>
-      <label class="radio-label"><span class="material-icons-outlined radio-label-icon">notes</span>Medianas<input type="radio" name="extension" value="medianas" class="invisible absolute"/></label>
-      <label class="radio-label"><span class="material-icons-outlined radio-label-icon">subject</span>Largas<input type="radio" name="extension" value="largas" class="invisible absolute"/></label>
+      <label class="radio-label"><span class="material-icons radio-label-icon">short_text</span>Cortas<input checked type="radio" name="extension" value="cortas" class="invisible absolute"/></label>
+      <label class="radio-label"><span class="material-icons radio-label-icon">notes</span>Medianas<input type="radio" name="extension" value="medianas" class="invisible absolute"/></label>
+      <label class="radio-label"><span class="material-icons radio-label-icon">subject</span>Largas<input type="radio" name="extension" value="largas" class="invisible absolute"/></label>
     </div>
   </section>
   <div class="flex justify-end pt-4">
-    <button id="iniciar" class="btn-primary w-full sm:w-auto"><span class="material-icons-outlined mr-2 text-lg">play_arrow</span><span class="truncate">Iniciar Juego</span></button>
+    <button id="iniciar" class="btn-primary w-full sm:w-auto"><span class="material-icons mr-2 text-lg">play_arrow</span><span class="truncate">Iniciar Juego</span></button>
   </div>
 </div>
 <div id="info" class="flex justify-between text-sm px-6 py-2 hidden bg-[var(--secondary-color)]">
