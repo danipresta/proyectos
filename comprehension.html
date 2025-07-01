@@ -51,7 +51,12 @@
 if(!localStorage.getItem('micTested')){
   window.location.href='microfono.html';
 }
-const textosBase=[{titulo:'Martin Fierro',rango:'7-8',contenido:'Aqui me pongo a cantar al compás de la vigüela, que el hombre que lo desvela una pena extraordinaria.'}];
+const textosBase=[
+  {titulo:'Caperucita Roja',rango:'5-6',contenido:'Hab\u00eda una vez una ni\u00f1a llamada Caperucita que llev\u00f3 una cesta a su abuela en el bosque.'},
+  {titulo:'Martin Fierro',rango:'7-8',contenido:'Aqui me pongo a cantar al comp\u00e1s de la vig\u00fcela, que el hombre que lo desvela una pena extraordinaria.'},
+  {titulo:'El Principito',rango:'9-10',contenido:'Cuando yo ten\u00eda seis a\u00f1os vi una vez una maravillosa l\u00e1mina en un libro sobre el Bosque Virgen.'},
+  {titulo:'Don Quijote',rango:'+10',contenido:'En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que viv\u00eda un hidalgo...'}
+];
 const textosExtra=JSON.parse(localStorage.getItem('textos')||'[]');
 const textos=[...textosBase,...textosExtra];
 const selector=document.getElementById('selector');

@@ -168,13 +168,38 @@ if (!localStorage.getItem('micTested')) {
 }
 
 const palabras = {
-  animales: ['puma','guanaco','\u00f1and\u00fa','yaguaret\u00e9','hornero'],
-  comida: ['asado','empanada','locro','mate','alfajor'],
-  objetos: ['bombilla','poncho','boleadora','cuchillo','truco'],
-  lugares: ['pampa','cordillera','litoral','patagonia','quebrada']
+  animales: {
+    cortas: ['gato','perro','loro','pez','oso'],
+    medianas: ['conejo','cabra','jirafa','lagarto','zorrito'],
+    largas: ['hipopotamo','ornitorrinco','mariposa','camaleon','tortuga']
+  },
+  comida: {
+    cortas: ['pan','sopa','te','taco','arroz'],
+    medianas: ['ensalada','empanada','sandwich','tamales','tostada'],
+    largas: ['espaguetis','hamburguesa','pastelito','churrasco','parrillada']
+  },
+  objetos: {
+    cortas: ['copa','lapiz','mesa','silla','taza'],
+    medianas: ['cuchillo','linterna','bombilla','martillo','rastrillo'],
+    largas: ['paraguas','microondas','refrigerador','telescopio','bicicleta']
+  },
+  lugares: {
+    cortas: ['pueblo','bosque','playa','selva','rio'],
+    medianas: ['montana','desierto','ciudad','campo','valle'],
+    largas: ['cordillera','peninsula','archipielago','acantilado','territorio']
+  }
 };
 const extras = JSON.parse(localStorage.getItem('listasPalabras')||'{}');
-Object.assign(palabras, extras);
+Object.entries(extras).forEach(([tema,list])=>{
+  if(!palabras[tema]){
+    palabras[tema]={cortas:[],medianas:[],largas:[]};
+  }
+  list.forEach(p=>{
+    const len=p.length;
+    const cat=len<=4?'cortas':len<=7?'medianas':'largas';
+    palabras[tema][cat].push(p);
+  });
+});
 const temaSelect = document.getElementById('tema');
 Object.keys(palabras).forEach((t,i)=>{
   const opt=document.createElement('option');
@@ -272,7 +297,8 @@ function finalizar() {
 
 document.getElementById('iniciar').addEventListener('click', () => {
   const tema = document.getElementById('tema').value;
-  palabrasSeleccionadas = [...palabras[tema]];
+  const ext = document.querySelector('input[name="extension"]:checked').value;
+  palabrasSeleccionadas = [...(palabras[tema] && palabras[tema][ext] ? palabras[tema][ext] : [])];
   indice = 0;
   correctas = 0;
   incorrectas = 0;
