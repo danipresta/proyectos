@@ -16,12 +16,12 @@
     --text-secondary: #60758a;
     --background-light: #ffffff;
     --border-color: #dbe0e6;
-    --highlight-correct: #FFFBEB;
-    --highlight-omission: #FFF3E0;
+    --accent-green: #10b981;
+    --accent-orange: #f97316;
   }
   .word { padding: 0.125rem 0.25rem; margin:0.125rem; border-radius:0.25rem; display:inline-block; }
-  .correct { background-color: var(--highlight-correct); }
-  .omission { background-color: var(--highlight-omission); }
+  .correct { color: var(--accent-green); }
+  .omission { color: var(--accent-orange); }
 </style>
 </head>
 <body class="bg-[var(--background-light)]" style='font-family: Lexend, "Noto Sans", sans-serif;'>
@@ -48,7 +48,15 @@
 </main>
 </div>
 <script>
-const textosBase=[{titulo:'Martin Fierro',rango:'7-8',contenido:'Aqui me pongo a cantar al compás de la vigüela, que el hombre que lo desvela una pena extraordinaria.'}];
+if(!localStorage.getItem('micTested')){
+  window.location.href='microfono.html';
+}
+const textosBase=[
+  {titulo:'Caperucita Roja',rango:'5-6',contenido:'Hab\u00eda una vez una ni\u00f1a llamada Caperucita que llev\u00f3 una cesta a su abuela en el bosque.'},
+  {titulo:'Martin Fierro',rango:'7-8',contenido:'Aqui me pongo a cantar al comp\u00e1s de la vig\u00fcela, que el hombre que lo desvela una pena extraordinaria.'},
+  {titulo:'El Principito',rango:'9-10',contenido:'Cuando yo ten\u00eda seis a\u00f1os vi una vez una maravillosa l\u00e1mina en un libro sobre el Bosque Virgen.'},
+  {titulo:'Don Quijote',rango:'+10',contenido:'En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que viv\u00eda un hidalgo...'}
+];
 const textosExtra=JSON.parse(localStorage.getItem('textos')||'[]');
 const textos=[...textosBase,...textosExtra];
 const selector=document.getElementById('selector');
@@ -79,11 +87,15 @@ function iniciarReconocimiento(){
   rec.continuous=true;
   rec.onresult=e=>{
     const txt=e.results[e.results.length-1][0].transcript.trim().toLowerCase();
-    const actual=palabras[indice];
-    if(!actual) return;
-    if(txt.includes(actual.textContent.toLowerCase().replace(/\./g,''))){
-      actual.classList.add('correct');
-      indice++;}
+    for(let i=indice;i<palabras.length;i++){
+      const w=palabras[i].textContent.toLowerCase().replace(/[.,]/g,'');
+      if(txt.includes(w)){
+        for(let j=indice;j<i;j++) palabras[j].classList.add('omission');
+        palabras[i].classList.add('correct');
+        indice=i+1;
+        break;
+      }
+    }
   };
   rec.start();
 }
@@ -102,6 +114,9 @@ function detener(){
       sesiones.push({fecha:new Date().toLocaleString(),modo:'lectura',detalle:`${palabras.length} palabras`});
       localStorage.setItem('sesiones',JSON.stringify(sesiones));
     };
+  }
+  for(let i=indice;i<palabras.length;i++){
+    palabras[i].classList.add('omission');
   }
 }
 document.getElementById('iniciar').addEventListener('click',()=>{
