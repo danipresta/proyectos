@@ -69,9 +69,16 @@
 </div>
 <script>
 document.getElementById('continuar').addEventListener('click', () => {
-  navigator.mediaDevices.getUserMedia({audio:true}).then(() => {
-    localStorage.setItem('micTested','true');
-    window.location.href = 'quick.html';
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
+    const rec = new MediaRecorder(stream);
+    rec.start();
+    setTimeout(() => {
+      rec.stop();
+    }, 1000);
+    rec.onstop = () => {
+      localStorage.setItem('micTested','true');
+      window.location.href = 'quick.html';
+    };
   }).catch(() => {
     alert('No se pudo acceder al micrófono');
   });
