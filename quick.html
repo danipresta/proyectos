@@ -155,6 +155,8 @@
     </div>
   </div>
 </div>
+<div id="preguntas" class="bg-white shadow rounded-xl p-4 mt-4 hidden"></div>
+<div id="resultadoMemoria" class="p-4 font-semibold"></div>
 </div>
 </main>
 <footer class="text-center py-6 border-t border-[var(--border-color)] bg-white">
@@ -214,6 +216,10 @@ let inicioTiempo;
 let cronometro;
 let reconocedor;
 let palabrasSeleccionadas = [];
+const velocidades=[8,5,3];
+let velIndex=1;
+let nivelInicio;
+let correctasNivel=0;
 
 function iniciarReconocimiento() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -232,9 +238,17 @@ function iniciarReconocimiento() {
       span.classList.remove('animate-word-initial');
       span.classList.add('animate-word-correct');
       correctas++;
+      correctasNivel++;
       document.getElementById('corr').textContent = correctas;
       indice++;
-      if (indice < palabrasSeleccionadas.length) {
+      if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
+        if(velIndex < velocidades.length-1) velIndex++;
+        nivelInicio=Date.now();
+        correctasNivel=0;
+      }
+      if(Date.now()-inicioTiempo>=60000){
+        finalizar();
+      } else if (indice < palabrasSeleccionadas.length) {
         setTimeout(mostrarPalabra, 300);
       } else {
         finalizar();
@@ -260,7 +274,7 @@ function mostrarPalabra() {
   const span = document.createElement('span');
   span.id = 'palabra-'+indice;
   span.textContent = palabra;
-  const duracion = document.getElementById('velocidad').value;
+  const duracion = velocidades[velIndex];
   span.className = 'absolute top-1/2 left-0 text-3xl font-bold whitespace-nowrap animate-word-initial';
   span.style.setProperty('--duracion', `${duracion}s`);
   span.addEventListener('animationend', () => {
@@ -269,7 +283,14 @@ function mostrarPalabra() {
       incorrectas++;
       document.getElementById('incorr').textContent = incorrectas;
       indice++;
-      if (indice < palabrasSeleccionadas.length) mostrarPalabra();
+      if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
+        if(velIndex < velocidades.length-1) velIndex++;
+        nivelInicio=Date.now();
+        correctasNivel=0;
+      }
+      if(Date.now()-inicioTiempo>=60000){
+        finalizar();
+      } else if (indice < palabrasSeleccionadas.length) mostrarPalabra();
       else finalizar();
     }
   });
@@ -293,6 +314,42 @@ function finalizar() {
   const sesiones=JSON.parse(localStorage.getItem('sesiones')||'[]');
   sesiones.push({fecha:new Date().toLocaleString(),modo:'rapidez',detalle:`${wpm} ppm`});
   localStorage.setItem('sesiones',JSON.stringify(sesiones));
+  generarPreguntas();
+}
+
+function generarPreguntas(){
+  const cont=document.getElementById('preguntas');
+  cont.innerHTML='';
+  const pool=Object.values(palabras).flatMap(obj=>Object.values(obj).flat());
+  const usados=[...palabrasSeleccionadas];
+  while(usados.length<5){
+    const rnd=pool[Math.floor(Math.random()*pool.length)];
+    if(!usados.includes(rnd)) usados.push(rnd);
+  }
+  usados.sort(()=>Math.random()-0.5);
+  const seleccion=usados.slice(0,5);
+  seleccion.forEach((w,i)=>{
+    const div=document.createElement('div');
+    div.className='mb-2';
+    div.innerHTML=`<p class="mb-1">¿La palabra <strong>${w}</strong> apareció?</p>
+    <label class="mr-2"><input type="radio" name="p${i}" value="si"> Sí</label>
+    <label><input type="radio" name="p${i}" value="no"> No</label>`;
+    div.dataset.correct=palabrasSeleccionadas.includes(w)?'si':'no';
+    cont.appendChild(div);
+  });
+  const btn=document.createElement('button');
+  btn.textContent='Comprobar';
+  btn.className='btn-primary mt-4';
+  btn.addEventListener('click',()=>{
+    let ac=0;
+    seleccion.forEach((w,i)=>{
+      const ans=document.querySelector(`input[name="p${i}"]:checked`);
+      if(ans && ans.value===(palabrasSeleccionadas.includes(w)?'si':'no')) ac++;});
+    document.getElementById('resultadoMemoria').textContent=`Memoria: ${ac}/5 correctas`;
+  });
+  cont.classList.remove('hidden');
+  document.getElementById('resultadoMemoria').textContent='';
+  cont.appendChild(btn);
 }
 
 document.getElementById('iniciar').addEventListener('click', () => {
@@ -302,16 +359,23 @@ document.getElementById('iniciar').addEventListener('click', () => {
   indice = 0;
   correctas = 0;
   incorrectas = 0;
+  correctasNivel = 0;
   document.getElementById('corr').textContent = 0;
   document.getElementById('incorr').textContent = 0;
   document.getElementById('tiempo').textContent = 0;
   document.getElementById('juego').classList.remove('hidden');
   document.getElementById('info').classList.remove('hidden');
   document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('preguntas').classList.add('hidden');
   document.getElementById('resultado').textContent = '';
+  velIndex = velocidades.indexOf(parseInt(document.getElementById('velocidad').value));
+  if(velIndex===-1) velIndex=1;
   inicioTiempo = Date.now();
+  nivelInicio = Date.now();
   cronometro = setInterval(() => {
-    document.getElementById('tiempo').textContent = Math.floor((Date.now() - inicioTiempo) / 1000);
+    const transcurrido=Date.now()-inicioTiempo;
+    document.getElementById('tiempo').textContent = Math.floor(transcurrido/1000);
+    if(transcurrido>=60000) finalizar();
   }, 1000);
   mostrarPalabra();
   iniciarReconocimiento();
