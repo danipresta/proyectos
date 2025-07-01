@@ -18,10 +18,18 @@
     --border-color: #dbe0e6;
     --accent-green: #10b981;
     --accent-orange: #f97316;
+    --highlight-correct: #FFFBEB;
+    --highlight-omission: #FFF3E0;
   }
   .word { padding: 0.125rem 0.25rem; margin:0.125rem; border-radius:0.25rem; display:inline-block; }
-  .correct { color: var(--accent-green); }
-  .omission { color: var(--accent-orange); }
+  .correct {
+    color: var(--accent-green);
+    background-color: var(--highlight-correct);
+  }
+  .omission {
+    color: var(--accent-orange);
+    background-color: var(--highlight-omission);
+  }
 </style>
 </head>
 <body class="bg-[var(--background-light)]" style='font-family: Lexend, "Noto Sans", sans-serif;'>
