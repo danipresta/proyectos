@@ -1,230 +1,94 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link crossorigin href="https://fonts.gstatic.com/" rel="preconnect"/>
-  <link as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Lexend:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-  <title>Juego de Rapidez</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <style type="text/tailwindcss">
-    :root {
-      --primary-color: #2563eb;
-      --secondary-color: #e0e7ef;
-      --border-color: #dbe0e6;
-      --accent-green: #10b981;
-      --accent-orange: #f97316;
-      --accent-yellow: #f59e0b;
-      --text-primary-color: #1e293b;
-      --text-secondary-color: #60758a;
-      --card-background-color: #fff;
-    }
-    body {
-      font-family: 'Lexend', "Noto Sans", sans-serif;
-    }
-    .nav-link {@apply text-[var(--text-secondary-color)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors;}
-    .nav-link-active {@apply text-[var(--primary-color)] font-semibold;}
-    .btn-primary {@apply flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors;}
-  </style>
-</head>
-<body>
-  <div class="flex h-full grow flex-col">
-    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--secondary-color)] bg-white px-6 md:px-10 py-3 shadow-sm">
-      <div class="flex items-center gap-3 text-[var(--primary-color)]">
-        <div class="size-7 text-[var(--primary-color)]">
-          <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"/></svg>
-        </div>
-        <h2 class="text-[var(--text-primary-color)] text-xl font-bold leading-tight tracking-[-0.015em]">EduRead</h2>
-      </div>
-      <div class="flex items-center gap-6">
-        <nav class="hidden md:flex items-center gap-6">
-          <a class="nav-link" href="index.html">Inicio</a>
-          <a class="nav-link nav-link-active" href="#">Juegos</a>
-          <a class="nav-link" href="#">Recursos</a>
-          <a class="nav-link" href="#">Mi progreso</a>
-        </nav>
-        <button class="sm:hidden text-[var(--text-secondary-color)]"><span class="material-icons text-3xl">menu</span></button>
-      </div>
-    </header>
-    <main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
-      <div class="settings-card w-full max-w-2xl">
-        <div id="info" class="flex justify-between text-sm px-6 py-2 hidden bg-[var(--secondary-color)]">
-          <span>Correctas: <span id="corr">0</span></span>
-          <span>Incorrectas: <span id="incorr">0</span></span>
-          <span>Tiempo: <span id="tiempo">0</span>s</span>
-        </div>
-        <div id="juego" class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden hidden">
-          <button id="playBtn" aria-label="Iniciar juego" class="absolute inset-0 flex items-center justify-center focus:outline-none group">
-            <div class="flex shrink-0 items-center justify-center rounded-full size-20 bg-black/50 hover:bg-black/70 text-white transition-all duration-300 group-focus:ring-4 group-focus:ring-[var(--primary-color)] group-focus:ring-opacity-50">
-              <span class="material-icons text-5xl">play_arrow</span>
-            </div>
-          </button>
-        </div>
-        <div id="resultado" class="p-6 font-semibold"></div>
-        <div id="feedback" class="bg-white shadow rounded-b-xl p-4 mt-4 hidden">
-          <h3 class="text-lg font-semibold text-[var(--text-primary-color)] mb-3">Tu Retroalimentación</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200">
-              <span class="material-icons text-[var(--accent-green)] text-3xl">thumb_up</span>
-              <div>
-                <p class="text-[var(--accent-green)] text-2xl font-bold" id="fb-corr">0</p>
-                <p class="text-sm text-green-700">Correctas</p>
+<!-- ... (código anterior) ... -->
+          <h2 class="text-[var(--text-primary-color)] text-xl font-bold leading-tight trac">
+            <span>Incorrectas: <span id="incorr">0</span></span>
+            <span>Tiempo: <span id="tiempo">0</span>s</span>
+          </h2>
+          <div id="juego" class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden hidden">
+            <button id="playBtn" aria-label="Iniciar juego" class="absolute inset-0 flex items-center justify-center focus:outline-none transition-all duration-300">
+              <div class="flex shrink-0 items-center justify-center rounded-full size-20 bg-black/50 hover:bg-black/70 text-white transition-all duration-300">
+                <span class="material-icons text-5xl">play_arrow</span>
               </div>
-            </div>
-            <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-orange-50 border border-orange-200">
-              <span class="material-icons text-[var(--accent-orange)] text-3xl">thumb_down</span>
-              <div>
-                <p class="text-[var(--accent-orange)] text-2xl font-bold" id="fb-incorr">0</p>
-                <p class="text-sm text-orange-700">Omitidas/Incorrectas</p>
-              </div>
-            </div>
-            <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
-              <span class="material-icons text-[var(--accent-yellow)] text-3xl">sentiment_very_satisfied</span>
-              <div>
-                <p class="text-[var(--accent-yellow)] text-2xl font-bold" id="fb-wpm">0</p>
-                <p class="text-sm text-yellow-700">PPM</p>
-              </div>
-            </div>
-          </div>
-          <div id="rating" class="flex justify-center gap-1 mt-3"></div>
-          <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <button id="btnReiniciar" class="bg-[var(--primary-color)] hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
-              <span class="material-icons">refresh</span>
-              Reiniciar Juego
-            </button>
-            <button id="btnVolver" class="bg-gray-200 hover:bg-gray-300 text-[var(--text-primary-color)] font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
-              <span class="material-icons">arrow_back</span>
-              Volver a Ejercicios
             </button>
           </div>
-        </div>
-        <div id="preguntas" class="bg-white shadow rounded-xl p-4 mt-4 hidden"></div>
-        <div id="resultadoMemoria" class="p-4 font-semibold"></div>
-        <div id="config" class="p-6 sm:p-8 border-t border-[var(--border-color)]">
-          <h1 class="text-[var(--text-primary-color)] tracking-tight text-2xl sm:text-3xl font-bold leading-tight">Ajustes del Juego de Rapidez</h1>
-          <p class="text-[var(--text-secondary-color)] mt-1 text-sm">Personaliza tu experiencia de juego para mejorar tu velocidad de lectura.</p>
-          <div class="p-6 sm:p-8 space-y-6">
-            <section>
-              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">speed</span>Velocidad</h3>
-              <select id="velocidad" class="border px-3 py-2 rounded w-full">
-                <option value="8">Lenta</option>
-                <option value="5" selected>Normal</option>
-                <option value="3">Rápida</option>
-              </select>
-            </section>
-            <section>
-              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">swap_horiz</span>Dirección</h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="radio-label"><span class="material-icons radio-label-icon">arrow_forward</span>Izquierda a derecha<input checked type="radio" name="direccion" value="mover-der" class="invisible absolute"/></label>
-                <label class="radio-label"><span class="material-icons radio-label-icon">arrow_back</span>Derecha a izquierda<input type="radio" name="direccion" value="mover-izq" class="invisible absolute"/></label>
+          <div id="resultado" class="p-6 font-semibold"></div>
+          <div id="feedback" class="bg-white shadow rounded-b-xl p-4 mt-4 hidden">
+            <h3 class="text-lg font-semibold text-[var(--text-primary-color)] mb-3">Tu Retroalimentación</h3>
+            <div>
+              <!-- ... (más código aquí, feedback inputs, etc) ... -->
+              <div id="rating" class="flex justify-center gap-1 mt-3"></div>
+              <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="btnReiniciar" class="bg-[var(--primary-color)] hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
+                  <span class="material-icons">refresh</span>
+                  Reiniciar Juego
+                </button>
+                <button id="btnVolver" class="bg-gray-200 hover:bg-gray-300 text-[var(--text-primary-color)] font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
+                  <span class="material-icons">arrow_back</span>
+                  Volver a Ejercicios
+                </button>
               </div>
-            </section>
-            <section>
-              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">category</span>Temática</h3>
-              <select id="tema" class="border p-2 rounded w-full"></select>
-              <input id="filePalabras" type="file" accept=".txt" class="border p-2 rounded w-full mt-2"/>
-              <div id="mensajeImport" class="text-green-600 text-sm mt-2 hidden">Lista importada</div>
-            </section>
-            <section>
-              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">straighten</span>Extensión</h3>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <label class="radio-label"><span class="material-icons radio-label-icon">short_text</span>Cortas<input checked type="radio" name="extension" value="cortas" class="invisible absolute"/></label>
-                <label class="radio-label"><span class="material-icons radio-label-icon">notes</span>Medianas<input type="radio" name="extension" value="medianas" class="invisible absolute"/></label>
-                <label class="radio-label"><span class="material-icons radio-label-icon">subject</span>Largas<input type="radio" name="extension" value="largas" class="invisible absolute"/></label>
-              </div>
-            </section>
-            <div class="flex justify-end pt-4">
-              <button id="iniciar" class="btn-primary w-full sm:w-auto"><span class="material-icons mr-2 text-lg">play_arrow</span><span class="truncate">Iniciar Juego</span></button>
             </div>
           </div>
-        </div>
-      </div>
-    </main>
-    <footer class="text-center py-6 border-t border-[var(--border-color)] bg-white">
-      <p class="text-sm text-[var(--text-secondary-color)]">© 2024 EduRead. Todos los derechos reservados.</p>
-    </footer>
-  </div>
-  <script>
-    if (!localStorage.getItem('micTested')) {
-      window.location.href = 'microfono.html';
-    }
-    const palabras = {
-      animales: {
-        cortas: ['gato','perro','loro','pez','oso'],
-        medianas: ['conejo','cabra','jirafa','lagarto','zorrito'],
-        largas: ['hipopotamo','ornitorrinco','mariposa','camaleon','tortuga']
-      },
-      comida: {
-        cortas: ['pan','sal','té','uva','arroz'],
-        medianas: ['galleta','tortilla','tomate','queso','pollo'],
-        largas: ['espaguetis','mayonesa','frambuesa','aguacate','hamburguesa']
-      }
-    };
-    const palabrasSeleccionadas = [];
-    let temaSelect = document.getElementById('tema');
+          <div id="preguntas" class="bg-white shadow rounded-xl p-4 mt-4 hidden"></div>
+          <div id="resultadoMemoria" class="p-4 font-semibold"></div>
+<!-- ... (más código anterior) ... -->
+<script>
+    // ... (otras funciones y variables arriba) ...
 
-    function cargarExtras(){
-      const extras=JSON.parse(localStorage.getItem('listasPalabras')||'{}');
-      Object.entries(extras).forEach(([tema,list])=>{
-        if(!palabras[tema]) palabras[tema]={cortas:[],medianas:[],largas:[]};
-        list.forEach(p=>{
-          const len=p.length;
-          const cat=len<=4?'cortas':len<=7?'medianas':'largas';
-          palabras[tema][cat].push(p);
-        });
-      });
+    function startGame(){
+      const tema = document.getElementById('tema').value;
+      const ext = document.querySelector('input[name="extension"]:checked').value;
+      palabrasSeleccionadas = [...(palabras[tema] && palabras[tema][ext] ? palabras[tema][ext] : [])];
+      indice = 0;
+      correctas = 0;
+      incorrectas = 0;
+      correctasNivel = 0;
+      document.getElementById('corr').textContent = 0;
+      document.getElementById('incorr').textContent = 0;
+      document.getElementById('tiempo').textContent = 0;
+      document.getElementById('info').classList.remove('hidden');
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('preguntas').classList.add('hidden');
+      document.getElementById('resultado').textContent = '';
+      velIndex = velocidades.indexOf(parseInt(document.getElementById('velocidad').value));
+      if(velIndex===-1) velIndex=1;
+      inicioTiempo = Date.now();
+      nivelInicio = Date.now();
+      cronometro = setInterval(() => {
+        const transcurrido=Date.now()-inicioTiempo;
+        document.getElementById('tiempo').textContent = Math.floor(transcurrido/1000);
+        if(transcurrido>=60000) finalizar();
+      }, 1000);
+      mostrarPalabra();
+      iniciarReconocimiento();
     }
 
-    function poblarTemas(){
-      temaSelect.innerHTML='';
-      Object.keys(palabras).forEach(t=>{
-        const opt=document.createElement('option');
-        opt.value=t;
-        opt.textContent=t.charAt(0).toUpperCase()+t.slice(1);
-        temaSelect.appendChild(opt);
-      });
-    }
-
-    cargarExtras();
-    poblarTemas();
-
-    document.getElementById('filePalabras').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const tema = prompt('Nombre del tema para esta lista?');
-        if (!tema) { alert('Tema no válido'); return; }
-        const palabrasLista = reader.result.split(/[,\n]+/).map(w => w.trim()).filter(Boolean);
-        if (!palabrasLista.length) { alert('Archivo vacío'); return; }
-        const data = JSON.parse(localStorage.getItem('listasPalabras') || '{}');
-        data[tema] = palabrasLista;
-        localStorage.setItem('listasPalabras', JSON.stringify(data));
-        if(!palabras[tema]) palabras[tema]={cortas:[],medianas:[],largas:[]};
-        palabrasLista.forEach(p=>{
-          const len=p.length;
-          const cat=len<=4?'cortas':len<=7?'medianas':'largas';
-          palabras[tema][cat].push(p);
-        });
-        poblarTemas();
-        const msg=document.getElementById('mensajeImport');
-        msg.textContent=`Lista "${tema}" importada`;
-        msg.classList.remove('hidden');
-        setTimeout(()=>msg.classList.add('hidden'),3000);
-      };
-      reader.readAsText(file);
+    document.getElementById('iniciar').addEventListener('click', () => {
+      document.getElementById('config').classList.add('hidden');
+      document.getElementById('juego').classList.remove('hidden');
+      document.getElementById('playBtn').classList.remove('hidden');
     });
 
-    // Aquí vendría el resto de la lógica JS para manejar el juego, botones y retroalimentación
-    // Ejemplo de reinicio de juego:
-    document.getElementById('btnReiniciar').onclick = function() {
-      // Lógica para reiniciar el juego sin recargar la página
-      // Puedes limpiar estados, ocultar feedback y mostrar pantalla inicial
-    };
-    document.getElementById('btnVolver').onclick = function() {
-      window.location.href = "index.html";
-    };
-  </script>
+    const playBtn=document.getElementById('playBtn');
+    playBtn.addEventListener('click',()=>{
+      playBtn.classList.add('scale-75','opacity-0');
+      setTimeout(()=>{
+        playBtn.classList.add('hidden');
+        playBtn.classList.remove('scale-75','opacity-0');
+        startGame();
+      },300);
+    });
+
+    document.getElementById('btnReiniciar').addEventListener('click', () => {
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('resultadoMemoria').textContent='';
+      playBtn.classList.remove('hidden');
+    });
+
+    document.getElementById('btnVolver').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    // ... (resto del script, otras funciones) ...
+</script>
 </body>
 </html>
