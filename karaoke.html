@@ -1,130 +1,231 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link crossorigin href="https://fonts.gstatic.com/" rel="preconnect"/>
-  <link as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Lexend:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-  <title>Karaoke Lector</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <style>
-    :root {
-      --primary-color: #2563eb;
-      --secondary-color: #e0e7ef;
-      --text-primary: #1e293b;
-      --text-secondary: #60758a;
-      --background-light: #fff;
-      --border-color: #dbe0e6;
-      --accent-green: #10b981;
-      --accent-orange: #f97316;
-      --highlight-correct: #fffbeb;
-      --highlight-omission: #fff3e0;
-    }
-    .word {
-      padding: 0.125rem 0.25rem;
-      margin: 0.125rem;
-      border-radius: 0.25rem;
-      display: inline-block;
-    }
-    .correct {
-      color: var(--accent-green);
-      background-color: var(--highlight-correct);
-    }
-    .omission {
-      color: var(--accent-orange);
-      background-color: var(--highlight-omission);
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link crossorigin href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Lexend:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<title>EduRead - Karaoke Lector</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+  :root {
+    --primary-color: #0c7ff2;
+    --secondary-color: #f0f2f5;
+    --text-primary: #111418;
+    --text-secondary: #60758a;
+    --background-light: #ffffff;
+    --background-accent: #e6f2ff;
+    --highlight-color: #ffc107;
+  }
+  .btn-primary {
+    @apply bg-[var(--primary-color)] text-white hover:bg-blue-700 transition-colors duration-300 ease-in-out;
+  }
+  .btn-secondary {
+    @apply bg-[var(--secondary-color)] text-[var(--text-primary)] hover:bg-gray-200 transition-colors duration-300 ease-in-out;
+  }
+  .lyric-line {
+    @apply text-2xl sm:text-3xl font-semibold text-[var(--text-secondary)] py-2 px-4 rounded-lg transition-all duration-500 ease-in-out;
+  }
+  .lyric-line.active {
+    @apply bg-[var(--highlight-color)] text-[var(--text-primary)] scale-105 shadow-lg;
+  }
+  .controls-button {
+    @apply p-3 rounded-full text-[var(--text-primary)] transition-all duration-200 ease-in-out flex items-center justify-center;
+  }
+  .controls-button:hover {
+    @apply bg-gray-200;
+  }
+  .controls-button.active {
+    @apply bg-[var(--primary-color)] text-white;
+  }
+</style>
 </head>
-<body class="bg-[var(--background-light)] min-h-screen flex flex-col" style='font-family: Lexend, "Noto Sans", sans-serif;'>
-  <div class="min-h-screen flex flex-col">
-    <main class="flex-1 flex justify-center items-center">
-      <div class="w-full max-w-xl p-8 bg-white rounded-xl shadow-lg">
-        <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-4 border-b border-[var(--secondary-color)]">
-          <h2 class="text-2xl sm:text-3xl font-bold">Karaoke Lector</h2>
-        </div>
-        <select id="cancion" class="border p-2 mb-4 w-full"></select>
-        <p id="letra" class="text-lg sm:text-xl font-normal leading-relaxed sm:leading-loose"></p>
-        <div class="mt-8 pt-6 border-t border-[var(--secondary-color)] flex justify-end gap-4">
-          <button id="iniciar" class="bg-[var(--primary-color)] text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-blue-600 transition-colors shadow-md">Iniciar</button>
-          <button id="finalizar" class="hidden bg-[var(--primary-color)] text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-blue-600 transition-colors shadow-md">Finalizar</button>
-        </div>
-      </div>
-    </main>
-    <footer class="bg-white border-t border-[var(--secondary-color)] py-6 px-10 text-center mt-auto">
-      <p class="text-sm text-[var(--text-secondary)]">© 2024 EduRead. Todos los derechos reservados.</p>
-    </footer>
+<body class="bg-[var(--background-light)]" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[var(--secondary-color)] bg-[var(--background-light)] px-6 sm:px-10 py-4 shadow-sm">
+  <div class="flex items-center gap-3">
+    <div class="size-8 text-[var(--primary-color)]">
+      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"/></svg>
+    </div>
+    <h1 class="text-[var(--text-primary)] text-2xl font-bold leading-tight tracking-[-0.015em]">EduRead</h1>
   </div>
-  <script>
-    if (!localStorage.getItem('micTested')) {
-      window.location.href = 'microfono.html';
-    }
-    const canciones = [
-      {titulo:'Manuelita la tortuga', letra:'Manuelita, vivía en Pehuajó, pero un día se marchó. A París se fue a probar un poquito de rouge.'},
-      {titulo:'Los Pollitos', letra:'Los pollitos dicen pío pío pío cuando tienen hambre cuando tienen frío.'}
-    ];
-    const select = document.getElementById('cancion');
-    canciones.forEach((c, i) => {
-      const o = document.createElement('option');
-      o.value = i;
-      o.textContent = c.titulo;
-      select.appendChild(o);
-    });
-    const letraCont = document.getElementById('letra');
-    let palabras = [], indice = 0, rec;
-    function cargar(idx) {
-      const text = canciones[idx].letra.split(/\s+/);
-      letraCont.innerHTML = '';
-      text.forEach(w => {
-        const s = document.createElement('span');
-        s.className = 'word';
-        s.textContent = w;
-        letraCont.appendChild(s);
-        letraCont.append(' ');
-      });
-      palabras = Array.from(letraCont.querySelectorAll('.word'));
-      indice = 0;
-    }
-    select.addEventListener('change', e => cargar(e.target.value));
-    cargar(0);
+  <div class="flex items-center gap-4">
+    <nav class="hidden md:flex items-center gap-6">
+      <a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="index.html">Inicio</a>
+      <a class="text-[var(--primary-color)] text-sm font-bold leading-normal" href="quick.html">Juegos</a>
+      <a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="recursos.html">Recursos</a>
+      <a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="progreso.html">Comunidad</a>
+    </nav>
+    <button aria-label="Notificaciones" class="flex items-center justify-center rounded-full h-10 w-10 btn-secondary"><span class="material-symbols-outlined text-[var(--text-primary)] text-2xl">notifications</span></button>
+    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-[var(--primary-color)] shadow-sm" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDLa-Dqx0OJOQCw12zF96RFEDwsEEfIzuKSqjCJR2KNzd--7BhhXxgla6PcPGUJrT4KBC4VSstNXr-0Cg3lmS8qq9MZEVLEnW4PujDDBs8c58neiKMkuaXuIvfcwteIstdxxT-0eQUP3nUBTogn8xIOWhxR2RDuhbDstiDHP4nEvfX5LaksJ-2Uq6TNVsyJGZzk4SfjjHgGJBaee9tkbUb7koORT12UXfwkwfZA49InMNRsyAx4TPDl_00-pH7AXEE94tA-1-jIWptX");'></div>
+    <button aria-label="Menú" class="md:hidden flex items-center justify-center rounded-full h-10 w-10 btn-secondary"><span class="material-symbols-outlined text-[var(--text-primary)] text-2xl">menu</span></button>
+  </div>
+</header>
+<main class="flex flex-1 flex-col items-center justify-start py-10 px-4 sm:px-8 bg-gradient-to-br from-[var(--background-light)] to-[var(--background-accent)]">
+  <div class="flex flex-col w-full max-w-3xl items-center">
+    <div class="flex items-center justify-between w-full mb-6 gap-2">
+      <button onclick="window.history.back()" class="btn-secondary py-2 px-4 rounded-lg flex items-center gap-2"><span class="material-symbols-outlined text-xl">arrow_back</span>Volver</button>
+      <h2 id="song-title" class="text-[var(--text-primary)] tracking-tight text-2xl sm:text-3xl font-bold leading-tight text-center flex-1">Karaoke Lector</h2>
+      <select id="song-select" class="btn-secondary py-2 px-2 rounded-lg"></select>
+    </div>
+    <div class="bg-[var(--background-light)] p-6 sm:p-8 rounded-xl shadow-2xl w-full text-center">
+      <div class="space-y-4 mb-8" id="lyrics-container"></div>
+      <div class="w-full h-2 bg-gray-300 rounded-full overflow-hidden mb-4"><div class="h-full bg-[var(--primary-color)] transition-all duration-500 ease-linear" id="progress-bar" style="width:0"></div></div>
+      <div class="flex items-center justify-center space-x-4">
+        <button aria-label="Reiniciar" class="controls-button" id="restart-btn"><span class="material-symbols-outlined text-3xl">replay</span></button>
+        <button aria-label="Retroceder" class="controls-button" id="back-btn"><span class="material-symbols-outlined text-3xl">fast_rewind</span></button>
+        <button aria-label="Pausar" class="controls-button" id="play-btn"><span class="material-symbols-outlined text-4xl">play_circle</span></button>
+        <button aria-label="Avanzar" class="controls-button" id="forward-btn"><span class="material-symbols-outlined text-3xl">fast_forward</span></button>
+        <button aria-label="Silenciar" class="controls-button" id="mute-btn"><span class="material-symbols-outlined text-3xl">volume_up</span></button>
+      </div>
+    </div>
+    <audio id="audio" class="hidden"></audio>
+  </div>
+</main>
+<footer class="py-8 bg-[var(--secondary-color)]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <p class="text-[var(--text-secondary)] text-sm font-normal leading-normal text-center">© 2024 EduRead. Todos los derechos reservados.</p>
+  </div>
+</footer>
+</div>
+<script>
+const songs = [
+  {
+    title: 'Los Pollitos Dicen',
+    audio: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_275662a778.mp3?filename=el-mundo-14572.mp3',
+    lyrics: [
+      'Los pollitos dicen',
+      'Pío, pío, pío',
+      'Cuando tienen hambre',
+      'Cuando tienen frío',
+      'La gallina busca',
+      'El maíz y el trigo',
+      'Les da la comida',
+      'Y les presta abrigo'
+    ]
+  },
+  {
+    title: 'Manuelita la Tortuga',
+    audio: 'https://cdn.pixabay.com/download/audio/2022/03/31/audio_7fae13df9c.mp3?filename=happy-time-14587.mp3',
+    lyrics: [
+      'Manuelita vivía en Pehuajó',
+      'Pero un día se marchó',
+      'Nadie supo bien por qué',
+      'A París ella se fue'
+    ]
+  },
+  {
+    title: 'Estrellita Dónde Estás',
+    audio: 'https://cdn.pixabay.com/download/audio/2021/11/30/audio_dedff45d19.mp3?filename=adventure-main-version-2246.mp3',
+    lyrics: [
+      'Estrellita dónde estás',
+      'Me pregunto quién serás',
+      'En el cielo y en el mar',
+      'Un diamante de verdad'
+    ]
+  }
+];
+const songSelect = document.getElementById('song-select');
+const songTitle = document.getElementById('song-title');
+const lyricsContainer = document.getElementById('lyrics-container');
+const progressBar = document.getElementById('progress-bar');
+const audio = document.getElementById('audio');
+let currentLine = 0;
+let lineInterval = null;
 
-    function iniciar() {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) {
-        alert('No soportado');
-        return;
-      }
-      rec = new SR();
-      rec.lang = 'es-ES';
-      rec.continuous = true;
-      rec.onresult = e => {
-        const t = e.results[e.results.length - 1][0].transcript.toLowerCase();
-        for (let i = indice; i < palabras.length; i++) {
-          const w = palabras[i].textContent.toLowerCase().replace(/[.,]/g, '');
-          if (t.includes(w)) {
-            for (let j = indice; j < i; j++) palabras[j].classList.add('omission');
-            palabras[i].classList.add('correct');
-            indice = i + 1;
-            break;
-          }
-        }
-      };
-      rec.start();
-    }
-    function detener() {
-      if (rec) rec.stop();
-      for (let i = indice; i < palabras.length; i++) palabras[i].classList.add('omission');
-    }
-    document.getElementById('iniciar').addEventListener('click', () => {
-      document.getElementById('iniciar').classList.add('hidden');
-      document.getElementById('finalizar').classList.remove('hidden');
-      iniciar();
-    });
-    document.getElementById('finalizar').addEventListener('click', () => {
-      document.getElementById('finalizar').classList.add('hidden');
-      detener();
-    });
-  </script>
+songs.forEach((s, idx) => {
+  const opt = document.createElement('option');
+  opt.value = idx;
+  opt.textContent = s.title;
+  songSelect.appendChild(opt);
+});
+
+function loadSong(idx) {
+  const song = songs[idx];
+  songTitle.textContent = 'Karaoke Lector: ' + song.title;
+  audio.src = song.audio;
+  lyricsContainer.innerHTML = '';
+  song.lyrics.forEach((line, i) => {
+    const p = document.createElement('p');
+    p.className = 'lyric-line' + (i === 0 ? ' active' : '');
+    p.textContent = line;
+    lyricsContainer.appendChild(p);
+  });
+  progressBar.style.width = '0%';
+  currentLine = 0;
+}
+
+songSelect.addEventListener('change', e => {
+  pauseSong();
+  loadSong(e.target.value);
+});
+
+function updateProgress() {
+  if (!audio.duration) return;
+  const percent = (audio.currentTime / audio.duration) * 100;
+  progressBar.style.width = percent + '%';
+  const lineDuration = audio.duration / songs[songSelect.value].lyrics.length;
+  const newLine = Math.floor(audio.currentTime / lineDuration);
+  if (newLine !== currentLine && newLine < songs[songSelect.value].lyrics.length) {
+    const lines = lyricsContainer.querySelectorAll('.lyric-line');
+    lines.forEach(l => l.classList.remove('active'));
+    lines[newLine].classList.add('active');
+    currentLine = newLine;
+  }
+}
+
+audio.addEventListener('timeupdate', updateProgress);
+audio.addEventListener('ended', () => {
+  playBtnIcon.textContent = 'play_circle';
+});
+
+function playSong() {
+  audio.play();
+  playBtnIcon.textContent = 'pause_circle';
+}
+
+function pauseSong() {
+  audio.pause();
+  playBtnIcon.textContent = 'play_circle';
+}
+
+const playBtn = document.getElementById('play-btn');
+const playBtnIcon = playBtn.querySelector('.material-symbols-outlined');
+const restartBtn = document.getElementById('restart-btn');
+const backBtn = document.getElementById('back-btn');
+const forwardBtn = document.getElementById('forward-btn');
+const muteBtn = document.getElementById('mute-btn');
+const muteIcon = muteBtn.querySelector('.material-symbols-outlined');
+
+playBtn.addEventListener('click', () => {
+  if (audio.paused) {
+    playSong();
+  } else {
+    pauseSong();
+  }
+});
+
+restartBtn.addEventListener('click', () => {
+  audio.currentTime = 0;
+  playSong();
+});
+
+backBtn.addEventListener('click', () => {
+  audio.currentTime = Math.max(0, audio.currentTime - 5);
+});
+
+forwardBtn.addEventListener('click', () => {
+  audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+});
+
+muteBtn.addEventListener('click', () => {
+  audio.muted = !audio.muted;
+  muteIcon.textContent = audio.muted ? 'volume_off' : 'volume_up';
+});
+
+loadSong(0);
+</script>
 </body>
 </html>
