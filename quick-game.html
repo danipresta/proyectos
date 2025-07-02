@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<title>EduRead - Juego de Rapidez</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --primary-color: #0c7ff2;
+      --secondary-color: #f0f2f5;
+      --text-primary: #111418;
+      --text-secondary: #60758a;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-yellow: #f59e0b;
+      --accent-orange: #f97316;
+    }
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: 'liga';
+    }
+    @keyframes moveWord {
+      0% { transform: translateX(-100%); opacity: 1;}
+      80% { transform: translateX(100vw); opacity: 1;}
+      100% { transform: translateX(100vw); opacity: 0;}
+    }
+    .animate-word-correct {
+      animation: moveWord 5s linear forwards;
+      color: var(--accent-green);
+    }
+    .animate-word-incorrect {
+      animation: moveWord 5s linear forwards;
+      color: var(--accent-orange);
+    }
+    .animate-word-initial {
+       animation: moveWord 5s linear forwards;
+       color: white;
+    }
+  </style>
+</head>
+<body class="bg-gray-50" style='font-family: Lexend, "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--secondary-color)] bg-white px-6 md:px-10 py-3 shadow-sm">
+<div class="flex items-center gap-3 text-[var(--text-primary)]">
+<div class="size-7 text-[var(--primary-color)]">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-[var(--text-primary)] text-xl font-bold leading-tight tracking-[-0.015em]">EduRead</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[var(--text-primary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="#">Inicio</a>
+<a class="text-[var(--primary-color)] text-sm font-bold leading-normal" href="#">Ejercicios</a>
+<a class="text-[var(--text-primary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="#">Progreso</a>
+<a class="text-[var(--text-primary)] hover:text-[var(--primary-color)] text-sm font-medium leading-normal transition-colors" href="#">Comunidad</a>
+</nav>
+<div class="flex items-center gap-3">
+<button aria-label="Notificaciones" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-[var(--secondary-color)] hover:bg-gray-200 text-[var(--text-primary)] transition-colors">
+<span class="material-icons text-xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-[var(--primary-color)]" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAWyAaI3HdqvOL5fLYdVxlrHCNx3xH2_IEAiYTF_3l2Dh1VL7txGK4Ph8y-c6fZTvBwFg0HeWfoUYu5wh0ATMY7o4u0KW_-d2cBTy044GnBxLFEDaCMb6GP7hruc66uLpGF0No-mWElikWE9jdn2cUM12mCkTbyW0Sw8AYTleUirmIVB5miL45e28cn21LnoBiPHM70jFi1UKPW2K8A1o_uPUCxj1dsKD67Y8byA2CMJpLkrV4ambd7u-4gd0Fm70QdLXHZ0CdUOW6N");'></div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
+<div class="layout-content-container flex flex-col w-full max-w-4xl">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 rounded-t-xl bg-white shadow">
+<h1 class="text-[var(--text-primary)] tracking-tight text-3xl font-bold leading-tight">Juego de Rapidez</h1>
+<div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+<span class="material-icons text-lg">timer</span>
+<span>Nivel: Intermedio</span>
+</div>
+</div>
+<div class="bg-white shadow p-4">
+<p class="text-[var(--text-secondary)] text-base font-normal leading-relaxed pb-6 pt-1">
+              Lee las palabras que aparecen en la pantalla lo más rápido que puedas. ¡Concéntrate y diviértete!
+            </p>
+<div class="p-0">
+<div class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden">
+<span class="absolute text-5xl font-bold animate-word-initial" style="top: 40%; animation-delay: 0s;">Palabra1</span>
+<span class="absolute text-5xl font-bold animate-word-correct hidden" style="top: 40%; animation-delay: 5s;">Palabra2</span>
+<span class="absolute text-5xl font-bold animate-word-incorrect hidden" style="top: 40%; animation-delay: 10s;">Palabra3</span>
+<button aria-label="Iniciar juego" class="absolute inset-0 flex items-center justify-center focus:outline-none group">
+<div class="flex shrink-0 items-center justify-center rounded-full size-20 bg-black/50 hover:bg-black/70 text-white transition-all duration-300 group-focus:ring-4 group-focus:ring-[var(--primary-color)] group-focus:ring-opacity-50">
+<span class="material-icons text-5xl">play_arrow</span>
+</div>
+</button>
+</div>
+</div>
+</div>
+<div class="bg-white shadow rounded-b-xl p-4 mt-px">
+<h3 class="text-lg font-semibold text-[var(--text-primary)] mb-3">Tu Retroalimentación</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200">
+<span class="material-icons text-[var(--accent-green)] text-3xl">thumb_up</span>
+<div>
+<p class="text-[var(--accent-green)] text-2xl font-bold">12</p>
+<p class="text-sm text-green-700">Correctas</p>
+</div>
+</div>
+<div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-orange-50 border border-orange-200">
+<span class="material-icons text-[var(--accent-orange)] text-3xl">thumb_down</span>
+<div>
+<p class="text-[var(--accent-orange)] text-2xl font-bold">2</p>
+<p class="text-sm text-orange-700">Omitidas/Incorrectas</p>
+</div>
+</div>
+<div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+<span class="material-icons text-[var(--accent-yellow)] text-3xl">sentiment_very_satisfied</span>
+<div>
+<p class="text-[var(--accent-yellow)] text-2xl font-bold">5</p>
+<p class="text-sm text-yellow-700">¡Genial!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-[var(--primary-color)] hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
+<span class="material-icons">refresh</span>
+              Reiniciar Juego
+            </button>
+<button class="bg-gray-200 hover:bg-gray-300 text-[var(--text-primary)] font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
+<span class="material-icons">arrow_back</span>
+              Volver a Ejercicios
+            </button>
+</div>
+</div>
+</main>
+<footer class="text-center py-6 border-t border-[var(--secondary-color)] bg-white text-[var(--text-secondary)] text-sm">
+<p>© 2024 EduRead. Todos los derechos reservados.</p>
+<p>Apoyando el desarrollo de la lectoescritura.</p>
+</footer>
+</div>
+</div>
+
+</body></html>

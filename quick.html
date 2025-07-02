@@ -389,32 +389,7 @@
     }
 
     document.getElementById('iniciar').addEventListener('click', () => {
-      const tema = document.getElementById('tema').value;
-      const ext = document.querySelector('input[name="extension"]:checked').value;
-      palabrasSeleccionadas = [...(palabras[tema] && palabras[tema][ext] ? palabras[tema][ext] : [])];
-      indice = 0;
-      correctas = 0;
-      incorrectas = 0;
-      correctasNivel = 0;
-      document.getElementById('corr').textContent = 0;
-      document.getElementById('incorr').textContent = 0;
-      document.getElementById('tiempo').textContent = 0;
-      document.getElementById('juego').classList.remove('hidden');
-      document.getElementById('info').classList.remove('hidden');
-      document.getElementById('feedback').classList.add('hidden');
-      document.getElementById('preguntas').classList.add('hidden');
-      document.getElementById('resultado').textContent = '';
-      velIndex = velocidades.indexOf(parseInt(document.getElementById('velocidad').value));
-      if(velIndex===-1) velIndex=1;
-      inicioTiempo = Date.now();
-      nivelInicio = Date.now();
-      cronometro = setInterval(() => {
-        const transcurrido=Date.now()-inicioTiempo;
-        document.getElementById('tiempo').textContent = Math.floor(transcurrido/1000);
-        if(transcurrido>=60000) finalizar();
-      }, 1000);
-      mostrarPalabra();
-      iniciarReconocimiento();
+      window.location.href = 'quick-game.html';
     });
   </script>
 </body>
