@@ -1,295 +1,367 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
-<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Lexend:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-<title>Juego de Rapidez</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<style type="text/tailwindcss">
-  :root {
-    --primary-color: #0c7ff2;
-    --secondary-color: #f0f2f5;
-    --text-primary-color: #111418;
-    --text-secondary-color: #60758a;
-    --background-color: #ffffff;
-    --card-background-color: #ffffff;
-    --border-color: #dbe0e6;
-    --accent-green: #10b981;
-    --accent-orange: #f97316;
-    --accent-yellow: #f59e0b;
-  }
-  body {
-    font-family: 'Lexend', "Noto Sans", sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-primary-color);
-  }
-  .nav-link {@apply text-[var(--text-secondary-color)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors;}
-  .nav-link-active {@apply text-[var(--primary-color)] font-semibold;}
-  .btn-primary {@apply flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors;}
-  .radio-label {@apply text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[var(--border-color)] px-4 py-2 text-[var(--text-secondary-color)] has-[:checked]:border-2 has-[:checked]:px-3.5 has-[:checked]:border-[var(--primary-color)] has-[:checked]:bg-[var(--primary-color)] has-[:checked]:text-white relative cursor-pointer transition-colors duration-200 ease-in-out;}
-  .radio-label-icon {@apply mr-2 text-lg;}
-  .section-title {@apply text-[var(--text-primary-color)] text-xl font-semibold leading-tight tracking-tight px-4 pb-3 pt-6 border-b border-[var(--border-color)] mb-4;}
-  .settings-card {@apply bg-[var(--card-background-color)] rounded-xl shadow-lg overflow-hidden;}
-  .material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    display: inline-block;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    direction: ltr;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: 'liga';
-  }
-</style>
-<style>
-@keyframes mover-izq {from {transform: translateX(100%);} to {transform: translateX(-100%);}}
-@keyframes mover-der {from {transform: translateX(-100%);} to {transform: translateX(100%);}}
-@keyframes moveWord {
-  0% { transform: translateX(-100%); opacity: 1; }
-  80% { transform: translateX(100vw); opacity: 1; }
-  100% { transform: translateX(100vw); opacity: 0; }
-}
-.animate-word-initial { animation: moveWord var(--duracion,5s) linear forwards; color: white; }
-.animate-word-correct { animation: moveWord var(--duracion,5s) linear forwards; color: var(--accent-green); }
-.animate-word-incorrect { animation: moveWord var(--duracion,5s) linear forwards; color: var(--accent-orange); }
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link crossorigin href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Lexend:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <title>Juego de Rapidez</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style type="text/tailwindcss">
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #e0e7ef;
+      --text-primary-color: #1e293b;
+      --text-secondary-color: #60758a;
+      --card-background-color: #fff;
+      --border-color: #dbe0e6;
+      --accent-green: #10b981;
+      --accent-orange: #f97316;
+      --accent-yellow: #f59e0b;
+    }
+    body {
+      font-family: 'Lexend', "Noto Sans", sans-serif;
+    }
+    .nav-link {@apply text-[var(--text-secondary-color)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors;}
+    .nav-link-active {@apply text-[var(--primary-color)] font-semibold;}
+    .btn-primary {@apply flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors;}
+    .radio-label {@apply text-sm font-medium leading-normal flex items-center justify-center rounded-lg border border-[var(--border-color)] px-4 py-2 text-[var(--text-secondary-color)] has-[:checked]:border-2 has-[:checked]:px-3.5 has-[:checked]:border-[var(--primary-color)] has-[:checked]:bg-[var(--primary-color)] has-[:checked]:text-white relative cursor-pointer transition-colors duration-200 ease-in-out;}
+    .radio-label-icon {@apply mr-2 text-lg;}
+    .section-title {@apply text-[var(--text-primary-color)] text-xl font-semibold leading-tight tracking-tight px-4 pb-3 pt-6 border-b border-[var(--border-color)] mb-4;}
+    .settings-card {@apply bg-[var(--card-background-color)] rounded-xl shadow-lg overflow-hidden;}
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: 'liga';
+    }
+  </style>
+  <style>
+    @keyframes mover-izq {from {transform: translateX(100%);} to {transform: translateX(-100%);}}
+    @keyframes mover-der {from {transform: translateX(-100%);} to {transform: translateX(100%);}}
+    .animate-word-initial { opacity: 0.95; animation: none; }
+    .animate-word-correct { animation: none; color: var(--accent-green);}
+    .animate-word-incorrect { animation: moveWord var(--duracion,5s) linear forwards; color: var(--accent-orange);}
+  </style>
 </head>
 <body class="bg-gray-50" style="font-family: Lexend, 'Noto Sans', sans-serif;">
-<div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
-<div class="flex h-full grow flex-col">
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--secondary-color)] bg-white px-6 md:px-10 py-3 shadow-sm">
-  <div class="flex items-center gap-3 text-[var(--primary-color)]">
-    <div class="size-7 text-[var(--primary-color)]">
-      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"/></svg>
+  <div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
+    <div class="flex h-full grow flex-col">
+      <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--secondary-color)] bg-white px-6 md:px-10 py-3 shadow-sm">
+        <div class="flex items-center gap-3 text-[var(--primary-color)]">
+          <div class="size-7 text-[var(--primary-color)]">
+            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"/></svg>
+          </div>
+          <h2 class="text-[var(--text-primary-color)] text-xl font-bold leading-tight tracking-[-0.015em]">EduRead</h2>
+        </div>
+        <div class="flex items-center gap-6">
+          <nav class="hidden md:flex items-center gap-6">
+            <a class="nav-link" href="index.html">Inicio</a>
+            <a class="nav-link nav-link-active" href="#">Juegos</a>
+            <a class="nav-link" href="#">Recursos</a>
+            <a class="nav-link" href="#">Mi progreso</a>
+          </nav>
+          <button class="sm:hidden text-[var(--text-secondary-color)]"><span class="material-icons text-3xl">menu</span></button>
+        </div>
+      </header>
+      <main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
+        <div class="settings-card w-full max-w-2xl">
+          <div id="config" class="p-6 sm:p-8 border-b border-[var(--border-color)]">
+            <h1 class="text-[var(--text-primary-color)] tracking-tight text-2xl sm:text-3xl font-bold leading-tight">Ajustes del Juego de Rapidez</h1>
+            <p class="text-[var(--text-secondary-color)] mt-1 text-sm">Personaliza tu experiencia de juego para mejorar tu velocidad de lectura.</p>
+          </div>
+          <div class="p-6 sm:p-8 space-y-6">
+            <section>
+              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">speed</span>Velocidad</h3>
+              <select id="velocidad" class="border px-3 py-2 rounded w-full">
+                <option value="8">Lenta</option>
+                <option value="5" selected>Normal</option>
+                <option value="3">Rápida</option>
+              </select>
+            </section>
+            <section>
+              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">swap_horiz</span>Dirección</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="radio-label"><span class="material-icons radio-label-icon">arrow_forward</span>Izquierda a derecha<input checked type="radio" name="direccion" value="mover-der" class="invisible absolute"/></label>
+                <label class="radio-label"><span class="material-icons radio-label-icon">arrow_back</span>Derecha a izquierda<input type="radio" name="direccion" value="mover-izq" class="invisible absolute"/></label>
+              </div>
+            </section>
+            <section>
+              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">category</span>Temática</h3>
+              <select id="tema" class="border p-2 rounded w-full"></select>
+            </section>
+            <section>
+              <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">straighten</span>Extensión</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <label class="radio-label"><span class="material-icons radio-label-icon">short_text</span>Cortas<input checked type="radio" name="extension" value="cortas" class="invisible absolute"/></label>
+                <label class="radio-label"><span class="material-icons radio-label-icon">notes</span>Medianas<input type="radio" name="extension" value="medianas" class="invisible absolute"/></label>
+                <label class="radio-label"><span class="material-icons radio-label-icon">subject</span>Largas<input type="radio" name="extension" value="largas" class="invisible absolute"/></label>
+              </div>
+            </section>
+            <div class="flex justify-end pt-4">
+              <button id="iniciar" class="btn-primary w-full sm:w-auto"><span class="material-icons mr-2 text-lg">play_arrow</span><span class="truncate">Iniciar Juego</span></button>
+            </div>
+          </div>
+          <div id="info" class="flex justify-between text-sm px-6 py-2 hidden bg-[var(--secondary-color)]">
+            <span>Correctas: <span id="corr">0</span></span>
+            <span>Incorrectas: <span id="incorr">0</span></span>
+            <span>Tiempo: <span id="tiempo">0</span>s</span>
+          </div>
+          <div id="juego" class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden hidden"></div>
+          <div id="resultado" class="p-6 font-semibold"></div>
+          <div id="feedback" class="bg-white shadow rounded-b-xl p-4 mt-4 hidden">
+            <h3 class="text-lg font-semibold text-[var(--text-primary-color)] mb-3">Tu Retroalimentación</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200">
+                <span class="material-icons text-[var(--accent-green)] text-3xl">thumb_up</span>
+                <div>
+                  <p class="text-[var(--accent-green)] text-2xl font-bold" id="fb-corr">0</p>
+                  <p class="text-sm text-green-700">Correctas</p>
+                </div>
+              </div>
+              <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-orange-50 border border-orange-200">
+                <span class="material-icons text-[var(--accent-orange)] text-3xl">thumb_down</span>
+                <div>
+                  <p class="text-[var(--accent-orange)] text-2xl font-bold" id="fb-incorr">0</p>
+                  <p class="text-sm text-orange-700">Omitidas/Incorrectas</p>
+                </div>
+              </div>
+              <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+                <span class="material-icons text-[var(--accent-yellow)] text-3xl">sentiment_very_satisfied</span>
+                <div>
+                  <p class="text-[var(--accent-yellow)] text-2xl font-bold" id="fb-wpm">0</p>
+                  <p class="text-sm text-yellow-700">PPM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="preguntas" class="bg-white shadow rounded-xl p-4 mt-4 hidden"></div>
+          <div id="resultadoMemoria" class="p-4 font-semibold"></div>
+        </div>
+      </main>
+      <footer class="text-center py-6 border-t border-[var(--border-color)] bg-white">
+        <p class="text-sm text-[var(--text-secondary-color)]">© 2024 EduRead. Todos los derechos reservados.</p>
+      </footer>
     </div>
-    <h2 class="text-[var(--text-primary-color)] text-xl font-bold leading-tight tracking-[-0.015em]">EduRead</h2>
   </div>
-  <div class="flex items-center gap-6">
-    <nav class="hidden md:flex items-center gap-6">
-      <a class="nav-link" href="index.html">Inicio</a>
-      <a class="nav-link nav-link-active" href="#">Juegos</a>
-      <a class="nav-link" href="#">Recursos</a>
-      <a class="nav-link" href="#">Mi progreso</a>
-    </nav>
-    <button class="sm:hidden text-[var(--text-secondary-color)]"><span class="material-icons text-3xl">menu</span></button>
-  </div>
-</header>
-<main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
-<div class="settings-card w-full max-w-2xl">
-<div id="config" class="p-6 sm:p-8 border-b border-[var(--border-color)]">
-  <h1 class="text-[var(--text-primary-color)] tracking-tight text-2xl sm:text-3xl font-bold leading-tight">Ajustes del Juego de Rapidez</h1>
-  <p class="text-[var(--text-secondary-color)] mt-1 text-sm">Personaliza tu experiencia de juego para mejorar tu velocidad de lectura.</p>
-</div>
-<div class="p-6 sm:p-8 space-y-6">
-  <section>
-    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">speed</span>Velocidad</h3>
-    <select id="velocidad" class="border px-3 py-2 rounded w-full">
-      <option value="8">Lenta</option>
-      <option value="5" selected>Normal</option>
-      <option value="3">Rápida</option>
-    </select>
-  </section>
-  <section>
-    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">swap_horiz</span>Dirección</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <label class="radio-label"><span class="material-icons radio-label-icon">arrow_forward</span>Izquierda a derecha<input checked type="radio" name="direccion" value="mover-der" class="invisible absolute"/></label>
-      <label class="radio-label"><span class="material-icons radio-label-icon">arrow_back</span>Derecha a izquierda<input type="radio" name="direccion" value="mover-izq" class="invisible absolute"/></label>
-    </div>
-  </section>
-  <section>
-    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">category</span>Temática</h3>
-    <select id="tema" class="border p-2 rounded w-full"></select>
-  </section>
-  <section>
-    <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">straighten</span>Extensión</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <label class="radio-label"><span class="material-icons radio-label-icon">short_text</span>Cortas<input checked type="radio" name="extension" value="cortas" class="invisible absolute"/></label>
-      <label class="radio-label"><span class="material-icons radio-label-icon">notes</span>Medianas<input type="radio" name="extension" value="medianas" class="invisible absolute"/></label>
-      <label class="radio-label"><span class="material-icons radio-label-icon">subject</span>Largas<input type="radio" name="extension" value="largas" class="invisible absolute"/></label>
-    </div>
-  </section>
-  <div class="flex justify-end pt-4">
-    <button id="iniciar" class="btn-primary w-full sm:w-auto"><span class="material-icons mr-2 text-lg">play_arrow</span><span class="truncate">Iniciar Juego</span></button>
-  </div>
-</div>
-<div id="info" class="flex justify-between text-sm px-6 py-2 hidden bg-[var(--secondary-color)]">
-  <span>Correctas: <span id="corr">0</span></span>
-  <span>Incorrectas: <span id="incorr">0</span></span>
-  <span>Tiempo: <span id="tiempo">0</span>s</span>
-</div>
-<div id="juego" class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden hidden"></div>
-<div id="resultado" class="p-6 font-semibold"></div>
-<div id="feedback" class="bg-white shadow rounded-b-xl p-4 mt-4 hidden">
-  <h3 class="text-lg font-semibold text-[var(--text-primary-color)] mb-3">Tu Retroalimentación</h3>
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200">
-      <span class="material-icons text-[var(--accent-green)] text-3xl">thumb_up</span>
-      <div>
-        <p class="text-[var(--accent-green)] text-2xl font-bold" id="fb-corr">0</p>
-        <p class="text-sm text-green-700">Correctas</p>
-      </div>
-    </div>
-    <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-orange-50 border border-orange-200">
-      <span class="material-icons text-[var(--accent-orange)] text-3xl">thumb_down</span>
-      <div>
-        <p class="text-[var(--accent-orange)] text-2xl font-bold" id="fb-incorr">0</p>
-        <p class="text-sm text-orange-700">Omitidas/Incorrectas</p>
-      </div>
-    </div>
-    <div class="flex items-center justify-center gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
-      <span class="material-icons text-[var(--accent-yellow)] text-3xl">sentiment_very_satisfied</span>
-      <div>
-        <p class="text-[var(--accent-yellow)] text-2xl font-bold" id="fb-wpm">0</p>
-        <p class="text-sm text-yellow-700">PPM</p>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-</main>
-<footer class="text-center py-6 border-t border-[var(--border-color)] bg-white">
-<p class="text-sm text-[var(--text-secondary-color)]">© 2024 EduRead. Todos los derechos reservados.</p>
-</footer>
-</div>
-</div>
-<script>
-if (!localStorage.getItem('micTested')) {
-  window.location.href = 'microfono.html';
-}
-
-const palabras = {
-  animales: ['puma','guanaco','\u00f1and\u00fa','yaguaret\u00e9','hornero'],
-  comida: ['asado','empanada','locro','mate','alfajor'],
-  objetos: ['bombilla','poncho','boleadora','cuchillo','truco'],
-  lugares: ['pampa','cordillera','litoral','patagonia','quebrada']
-};
-const extras = JSON.parse(localStorage.getItem('listasPalabras')||'{}');
-Object.assign(palabras, extras);
-const temaSelect = document.getElementById('tema');
-Object.keys(palabras).forEach((t,i)=>{
-  const opt=document.createElement('option');
-  opt.value=t; opt.textContent=t.charAt(0).toUpperCase()+t.slice(1);
-  if(i===0) opt.selected=true;
-  temaSelect.appendChild(opt);
-});
-let indice = 0;
-let correctas = 0;
-let incorrectas = 0;
-let inicioTiempo;
-let cronometro;
-let reconocedor;
-let palabrasSeleccionadas = [];
-
-function iniciarReconocimiento() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    alert('Este navegador no soporta reconocimiento de voz');
-    return;
-  }
-  reconocedor = new SpeechRecognition();
-  reconocedor.lang = 'es-ES';
-  reconocedor.continuous = true;
-  reconocedor.onresult = (evento) => {
-    const texto = evento.results[evento.results.length-1][0].transcript.trim().toLowerCase();
-    const palabraActual = palabrasSeleccionadas[indice];
-    if (texto.includes(palabraActual.toLowerCase())) {
-      const span = document.getElementById('palabra-' + indice);
-      span.classList.remove('animate-word-initial');
-      span.classList.add('animate-word-correct');
-      correctas++;
-      document.getElementById('corr').textContent = correctas;
-      indice++;
-      if (indice < palabrasSeleccionadas.length) {
-        setTimeout(mostrarPalabra, 300);
-      } else {
-        finalizar();
+  <script>
+    if (!localStorage.getItem('micTested')) {
+      window.location.href = 'microfono.html';
+    }
+    const palabras = {
+      animales: {
+        cortas: ['gato','perro','loro','pez','oso'],
+        medianas: ['conejo','cabra','jirafa','lagarto','zorrito'],
+        largas: ['hipopotamo','ornitorrinco','mariposa','camaleon','tortuga']
+      },
+      comida: {
+        cortas: ['pan','sopa','te','taco','arroz'],
+        medianas: ['ensalada','empanada','sandwich','tamales','tostada'],
+        largas: ['espaguetis','hamburguesa','pastelito','churrasco','parrillada']
+      },
+      objetos: {
+        cortas: ['copa','lapiz','mesa','silla','taza'],
+        medianas: ['cuchillo','linterna','bombilla','martillo','rastrillo'],
+        largas: ['paraguas','microondas','refrigerador','telescopio','bicicleta']
+      },
+      lugares: {
+        cortas: ['pueblo','bosque','playa','selva','rio'],
+        medianas: ['montana','desierto','ciudad','campo','valle'],
+        largas: ['cordillera','peninsula','archipielago','acantilado','territorio']
       }
-    }
-  };
-  reconocedor.onerror = (e) => {
-    if (e.error === 'not-allowed') {
-      alert('Permiso de micr\u00f3fono denegado');
-      finalizar();
-    }
-  };
-  reconocedor.onend = () => {
-    if (indice < palabrasSeleccionadas.length) reconocedor.start();
-  };
-  reconocedor.start();
-}
+    };
+    const extras = JSON.parse(localStorage.getItem('listasPalabras')||'{}');
+    Object.entries(extras).forEach(([tema,list])=>{
+      if(!palabras[tema]){
+        palabras[tema]={cortas:[],medianas:[],largas:[]};
+      }
+      list.forEach(p=>{
+        const len=p.length;
+        const cat=len<=4?'cortas':len<=7?'medianas':'largas';
+        palabras[tema][cat].push(p);
+      });
+    });
+    const temaSelect = document.getElementById('tema');
+    Object.keys(palabras).forEach((t,i)=>{
+      const opt=document.createElement('option');
+      opt.value=t;
+      opt.textContent=t.charAt(0).toUpperCase()+t.slice(1);
+      temaSelect.appendChild(opt);
+    });
 
-function mostrarPalabra() {
-  const area = document.getElementById('juego');
-  area.innerHTML = '';
-  const palabra = palabrasSeleccionadas[indice];
-  const span = document.createElement('span');
-  span.id = 'palabra-'+indice;
-  span.textContent = palabra;
-  const duracion = document.getElementById('velocidad').value;
-  span.className = 'absolute top-1/2 left-0 text-3xl font-bold whitespace-nowrap animate-word-initial';
-  span.style.setProperty('--duracion', `${duracion}s`);
-  span.addEventListener('animationend', () => {
-    if (!span.classList.contains('animate-word-correct')) {
-      span.classList.replace('animate-word-initial','animate-word-incorrect');
-      incorrectas++;
-      document.getElementById('incorr').textContent = incorrectas;
-      indice++;
-      if (indice < palabrasSeleccionadas.length) mostrarPalabra();
-      else finalizar();
+    let indice = 0, correctas = 0, incorrectas = 0;
+    let cronometro, reconocedor, palabrasSeleccionadas = [];
+    const velocidades=[8,5,3];
+    let velIndex=1, nivelInicio, correctasNivel=0, inicioTiempo;
+
+    function iniciarReconocimiento() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("El navegador no soporta reconocimiento de voz.");
+        return;
+      }
+      reconocedor = new SpeechRecognition();
+      reconocedor.lang = "es-ES";
+      reconocedor.continuous = true;
+      reconocedor.onresult = e => {
+        const txt = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
+        const palabra = palabrasSeleccionadas[indice];
+        if (!palabra) return;
+        if (txt.includes(palabra.toLowerCase().replace(/\./g,''))) {
+          const span = document.getElementById('palabra-'+indice);
+          span.classList.remove('animate-word-initial');
+          span.classList.add('animate-word-correct');
+          correctas++;
+          correctasNivel++;
+          document.getElementById('corr').textContent = correctas;
+          indice++;
+          if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
+            if(velIndex < velocidades.length-1) velIndex++;
+            nivelInicio=Date.now();
+            correctasNivel=0;
+          }
+          if(Date.now()-inicioTiempo>=60000){
+            finalizar();
+          } else if (indice < palabrasSeleccionadas.length) {
+            setTimeout(mostrarPalabra, 300);
+          } else {
+            finalizar();
+          }
+        }
+      };
+      reconocedor.start();
     }
-  });
-  area.appendChild(span);
-}
 
-function finalizar() {
-  if (reconocedor) reconocedor.stop();
-  clearInterval(cronometro);
-  document.getElementById('info').classList.add('hidden');
-  document.getElementById('feedback').classList.remove('hidden');
-  const tiempoTotal = Math.floor((Date.now() - inicioTiempo) / 1000);
-  const wpm = Math.round(correctas / (tiempoTotal / 60 || 1));
-  const total = palabrasSeleccionadas.length;
-  const porcentaje = Math.round((correctas / total) * 100);
-  let nivel = porcentaje >= 80 ? 'Avanzado' : porcentaje >= 50 ? 'Intermedio' : 'Inicial';
-  document.getElementById('resultado').textContent = `\u00a1Bien hecho! Nivel ${nivel}`;
-  document.getElementById('fb-corr').textContent = correctas;
-  document.getElementById('fb-incorr').textContent = incorrectas;
-  document.getElementById('fb-wpm').textContent = wpm;
-  const sesiones=JSON.parse(localStorage.getItem('sesiones')||'[]');
-  sesiones.push({fecha:new Date().toLocaleString(),modo:'rapidez',detalle:`${wpm} ppm`});
-  localStorage.setItem('sesiones',JSON.stringify(sesiones));
-}
+    function mostrarPalabra() {
+      const juego = document.getElementById('juego');
+      juego.innerHTML = '';
+      if (indice >= palabrasSeleccionadas.length) return;
+      const palabra = palabrasSeleccionadas[indice];
+      const span = document.createElement('span');
+      span.id = 'palabra-'+indice;
+      span.textContent = palabra;
+      const duracion = velocidades[velIndex];
+      span.className = 'absolute top-1/2 left-0 text-3xl font-bold whitespace-nowrap animate-word-initial';
+      span.style.setProperty('--duracion', `${duracion}s`);
+      span.addEventListener('animationend', () => {
+        if (!span.classList.contains('animate-word-correct')) {
+          span.classList.add('animate-word-incorrect');
+          incorrectas++;
+          document.getElementById('incorr').textContent = incorrectas;
+          indice++;
+          if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
+            if(velIndex < velocidades.length-1) velIndex++;
+            nivelInicio=Date.now();
+            correctasNivel=0;
+          }
+          if(Date.now()-inicioTiempo>=60000){
+            finalizar();
+          } else if (indice < palabrasSeleccionadas.length) mostrarPalabra();
+          else finalizar();
+        }
+      });
+      const direccion = document.querySelector('input[name="direccion"]:checked').value;
+      span.style.animationName = direccion;
+      span.style.animationDuration = `${duracion}s`;
+      span.classList.add(direccion);
+      juego.appendChild(span);
+    }
 
-document.getElementById('iniciar').addEventListener('click', () => {
-  const tema = document.getElementById('tema').value;
-  palabrasSeleccionadas = [...palabras[tema]];
-  indice = 0;
-  correctas = 0;
-  incorrectas = 0;
-  document.getElementById('corr').textContent = 0;
-  document.getElementById('incorr').textContent = 0;
-  document.getElementById('tiempo').textContent = 0;
-  document.getElementById('juego').classList.remove('hidden');
-  document.getElementById('info').classList.remove('hidden');
-  document.getElementById('feedback').classList.add('hidden');
-  document.getElementById('resultado').textContent = '';
-  inicioTiempo = Date.now();
-  cronometro = setInterval(() => {
-    document.getElementById('tiempo').textContent = Math.floor((Date.now() - inicioTiempo) / 1000);
-  }, 1000);
-  mostrarPalabra();
-  iniciarReconocimiento();
-});
-</script>
+    function finalizar() {
+      if (reconocedor) reconocedor.stop();
+      clearInterval(cronometro);
+      document.getElementById('info').classList.add('hidden');
+      document.getElementById('feedback').classList.remove('hidden');
+      const tiempoTotal = Math.floor((Date.now() - inicioTiempo) / 1000);
+      const wpm = Math.round(correctas / (tiempoTotal / 60 || 1));
+      const total = palabrasSeleccionadas.length;
+      const porcentaje = Math.round((correctas / total) * 100);
+      let nivel = porcentaje >= 80 ? 'Avanzado' : porcentaje >= 50 ? 'Intermedio' : 'Inicial';
+      document.getElementById('resultado').textContent = `¡Bien hecho! Nivel ${nivel}`;
+      document.getElementById('fb-corr').textContent = correctas;
+      document.getElementById('fb-incorr').textContent = incorrectas;
+      document.getElementById('fb-wpm').textContent = wpm;
+      const sesiones=JSON.parse(localStorage.getItem('sesiones')||'[]');
+      sesiones.push({fecha:new Date().toLocaleString(),modo:'rapidez',detalle:`${wpm} ppm`});
+      localStorage.setItem('sesiones',JSON.stringify(sesiones));
+      generarPreguntas();
+    }
+
+    function generarPreguntas(){
+      const cont=document.getElementById('preguntas');
+      cont.innerHTML='';
+      const pool=Object.values(palabras).flatMap(obj=>Object.values(obj).flat());
+      const usados=[...palabrasSeleccionadas];
+      while(usados.length<5){
+        const rnd=pool[Math.floor(Math.random()*pool.length)];
+        if(!usados.includes(rnd)) usados.push(rnd);
+      }
+      usados.sort(()=>Math.random()-0.5);
+      const seleccion=usados.slice(0,5);
+      seleccion.forEach((w,i)=>{
+        const div=document.createElement('div');
+        div.className='mb-2';
+        div.innerHTML=`<p class="mb-1">¿La palabra <strong>${w}</strong> apareció?</p>
+        <label class="mr-2"><input type="radio" name="p${i}" value="si"> Sí</label>
+        <label><input type="radio" name="p${i}" value="no"> No</label>`;
+        div.dataset.correct=palabrasSeleccionadas.includes(w)?'si':'no';
+        cont.appendChild(div);
+      });
+      const btn=document.createElement('button');
+      btn.textContent='Comprobar';
+      btn.className='btn-primary mt-4';
+      btn.addEventListener('click',()=>{
+        let ac=0;
+        seleccion.forEach((w,i)=>{
+          const ans=document.querySelector(`input[name="p${i}"]:checked`);
+          if(ans && ans.value===(palabrasSeleccionadas.includes(w)?'si':'no')) ac++;});
+        document.getElementById('resultadoMemoria').textContent=`Memoria: ${ac}/5 correctas`;
+      });
+      cont.classList.remove('hidden');
+      document.getElementById('resultadoMemoria').textContent='';
+      cont.appendChild(btn);
+    }
+
+    document.getElementById('iniciar').addEventListener('click', () => {
+      const tema = document.getElementById('tema').value;
+      const ext = document.querySelector('input[name="extension"]:checked').value;
+      palabrasSeleccionadas = [...(palabras[tema] && palabras[tema][ext] ? palabras[tema][ext] : [])];
+      indice = 0;
+      correctas = 0;
+      incorrectas = 0;
+      correctasNivel = 0;
+      document.getElementById('corr').textContent = 0;
+      document.getElementById('incorr').textContent = 0;
+      document.getElementById('tiempo').textContent = 0;
+      document.getElementById('juego').classList.remove('hidden');
+      document.getElementById('info').classList.remove('hidden');
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('preguntas').classList.add('hidden');
+      document.getElementById('resultado').textContent = '';
+      velIndex = velocidades.indexOf(parseInt(document.getElementById('velocidad').value));
+      if(velIndex===-1) velIndex=1;
+      inicioTiempo = Date.now();
+      nivelInicio = Date.now();
+      cronometro = setInterval(() => {
+        const transcurrido=Date.now()-inicioTiempo;
+        document.getElementById('tiempo').textContent = Math.floor(transcurrido/1000);
+        if(transcurrido>=60000) finalizar();
+      }, 1000);
+      mostrarPalabra();
+      iniciarReconocimiento();
+    });
+  </script>
 </body>
 </html>
