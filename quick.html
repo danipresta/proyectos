@@ -137,6 +137,8 @@
             <section>
               <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">category</span>Temática</h3>
               <select id="tema" class="border p-2 rounded w-full"></select>
+              <input id="filePalabras" type="file" accept=".txt" class="border p-2 rounded w-full mt-2"/>
+              <div id="mensajeImport" class="text-green-600 text-sm mt-2 hidden">Lista importada</div>
             </section>
             <section>
               <h3 class="section-title"><span class="material-icons align-bottom mr-2 text-[var(--primary-color)]">straighten</span>Extensión</h3>
@@ -183,23 +185,59 @@
         largas: ['cordillera','peninsula','archipielago','acantilado','territorio']
       }
     };
-    const extras = JSON.parse(localStorage.getItem('listasPalabras')||'{}');
-    Object.entries(extras).forEach(([tema,list])=>{
-      if(!palabras[tema]){
-        palabras[tema]={cortas:[],medianas:[],largas:[]};
-      }
-      list.forEach(p=>{
-        const len=p.length;
-        const cat=len<=4?'cortas':len<=7?'medianas':'largas';
-        palabras[tema][cat].push(p);
-      });
-    });
     const temaSelect = document.getElementById('tema');
-    Object.keys(palabras).forEach((t,i)=>{
-      const opt=document.createElement('option');
-      opt.value=t;
-      opt.textContent=t.charAt(0).toUpperCase()+t.slice(1);
-      temaSelect.appendChild(opt);
+
+    function cargarExtras(){
+      const extras=JSON.parse(localStorage.getItem('listasPalabras')||'{}');
+      Object.entries(extras).forEach(([tema,list])=>{
+        if(!palabras[tema]) palabras[tema]={cortas:[],medianas:[],largas:[]};
+        list.forEach(p=>{
+          const len=p.length;
+          const cat=len<=4?'cortas':len<=7?'medianas':'largas';
+          palabras[tema][cat].push(p);
+        });
+      });
+    }
+
+    function poblarTemas(){
+      temaSelect.innerHTML='';
+      Object.keys(palabras).forEach(t=>{
+        const opt=document.createElement('option');
+        opt.value=t;
+        opt.textContent=t.charAt(0).toUpperCase()+t.slice(1);
+        temaSelect.appendChild(opt);
+      });
+    }
+
+    cargarExtras();
+    poblarTemas();
+
+    document.getElementById('filePalabras').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const tema = prompt('Nombre del tema para esta lista?');
+        if (!tema) { alert('Tema no válido'); return; }
+        const palabrasLista = reader.result.split(/[,\n]+/).map(w => w.trim()).filter(Boolean);
+        if (!palabrasLista.length) { alert('Archivo vacío'); return; }
+        const data = JSON.parse(localStorage.getItem('listasPalabras') || '{}');
+        data[tema] = palabrasLista;
+        localStorage.setItem('listasPalabras', JSON.stringify(data));
+        if(!palabras[tema]) palabras[tema]={cortas:[],medianas:[],largas:[]};
+        palabrasLista.forEach(p=>{
+          const len=p.length;
+          const cat=len<=4?'cortas':len<=7?'medianas':'largas';
+          palabras[tema][cat].push(p);
+        });
+        poblarTemas();
+        const msg=document.getElementById('mensajeImport');
+        msg.textContent=`Lista "${tema}" importada`;
+        msg.classList.remove('hidden');
+        setTimeout(()=>msg.classList.add('hidden'),3000);
+        e.target.value='';
+      };
+      reader.readAsText(file);
     });
 
     let indice = 0, correctas = 0, incorrectas = 0;
