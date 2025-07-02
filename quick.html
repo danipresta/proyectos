@@ -83,7 +83,13 @@
             <span>Incorrectas: <span id="incorr">0</span></span>
             <span>Tiempo: <span id="tiempo">0</span>s</span>
           </div>
-          <div id="juego" class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden hidden"></div>
+          <div id="juego" class="relative flex items-center justify-center bg-gradient-to-br from-sky-500 to-indigo-600 aspect-[16/7] rounded-lg p-4 shadow-inner overflow-hidden hidden">
+            <button id="playBtn" aria-label="Iniciar juego" class="absolute inset-0 flex items-center justify-center focus:outline-none transition-all duration-300">
+              <div class="flex shrink-0 items-center justify-center rounded-full size-20 bg-black/50 hover:bg-black/70 text-white transition-all duration-300">
+                <span class="material-icons text-5xl">play_arrow</span>
+              </div>
+            </button>
+          </div>
           <div id="resultado" class="p-6 font-semibold"></div>
           <div id="feedback" class="bg-white shadow rounded-b-xl p-4 mt-4 hidden">
             <h3 class="text-lg font-semibold text-[var(--text-primary-color)] mb-3">Tu Retroalimentación</h3>
@@ -111,6 +117,17 @@
               </div>
             </div>
             <div id="rating" class="flex justify-center gap-1 mt-3"></div>
+            <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <button id="btnReiniciar" class="bg-[var(--primary-color)] hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
+                <span class="material-icons">refresh</span>
+                Reiniciar Juego
+              </button>
+              <button id="btnVolver" class="bg-gray-200 hover:bg-gray-300 text-[var(--text-primary-color)] font-bold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 text-lg">
+                <span class="material-icons">arrow_back</span>
+                Volver a Ejercicios
+              </button>
+            </div>
+          </div>
           </div>
           <div id="preguntas" class="bg-white shadow rounded-xl p-4 mt-4 hidden"></div>
           <div id="resultadoMemoria" class="p-4 font-semibold"></div>
@@ -388,8 +405,58 @@
       mostrar();
     }
 
+    function startGame(){
+      const tema = document.getElementById('tema').value;
+      const ext = document.querySelector('input[name="extension"]:checked').value;
+      palabrasSeleccionadas = [...(palabras[tema] && palabras[tema][ext] ? palabras[tema][ext] : [])];
+      indice = 0;
+      correctas = 0;
+      incorrectas = 0;
+      correctasNivel = 0;
+      document.getElementById('corr').textContent = 0;
+      document.getElementById('incorr').textContent = 0;
+      document.getElementById('tiempo').textContent = 0;
+      document.getElementById('info').classList.remove('hidden');
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('preguntas').classList.add('hidden');
+      document.getElementById('resultado').textContent = '';
+      velIndex = velocidades.indexOf(parseInt(document.getElementById('velocidad').value));
+      if(velIndex===-1) velIndex=1;
+      inicioTiempo = Date.now();
+      nivelInicio = Date.now();
+      cronometro = setInterval(() => {
+        const transcurrido=Date.now()-inicioTiempo;
+        document.getElementById('tiempo').textContent = Math.floor(transcurrido/1000);
+        if(transcurrido>=60000) finalizar();
+      }, 1000);
+      mostrarPalabra();
+      iniciarReconocimiento();
+    }
+
     document.getElementById('iniciar').addEventListener('click', () => {
-      window.location.href = 'quick-game.html';
+      document.getElementById('config').classList.add('hidden');
+      document.getElementById('juego').classList.remove('hidden');
+      document.getElementById('playBtn').classList.remove('hidden');
+    });
+
+    const playBtn=document.getElementById('playBtn');
+    playBtn.addEventListener('click',()=>{
+      playBtn.classList.add('scale-75','opacity-0');
+      setTimeout(()=>{
+        playBtn.classList.add('hidden');
+        playBtn.classList.remove('scale-75','opacity-0');
+        startGame();
+      },300);
+    });
+
+    document.getElementById('btnReiniciar').addEventListener('click', () => {
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('resultadoMemoria').textContent='';
+      playBtn.classList.remove('hidden');
+    });
+
+    document.getElementById('btnVolver').addEventListener('click', () => {
+      window.location.href = 'index.html';
     });
   </script>
 </body>
