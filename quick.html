@@ -257,10 +257,12 @@
       reader.readAsText(file);
     });
 
-    let indice = 0, correctas = 0, incorrectas = 0;
+    // Variables y configuración inicial
+    let indice = 0, correctas = 0, incorrectas = 0, correctasNivel = 0;
     let cronometro, reconocedor, palabrasSeleccionadas = [];
     const velocidades=[8,5,3];
-    let velIndex=1, nivelInicio, correctasNivel=0, inicioTiempo;
+    let velIndex=1, nivelInicio, inicioTiempo;
+    // Asume que la variable 'palabras' está definida en tu código original
 
     function iniciarReconocimiento() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -336,7 +338,7 @@
     }
 
     function finalizar() {
-      if (reconocedor) reconocedor.stop();
+      if (reconocedor) try { reconocedor.stop(); } catch(e){}
       clearInterval(cronometro);
       document.getElementById('info').classList.add('hidden');
       document.getElementById('feedback').classList.remove('hidden');
@@ -349,60 +351,6 @@
       document.getElementById('fb-corr').textContent = correctas;
       document.getElementById('fb-incorr').textContent = incorrectas;
       document.getElementById('fb-wpm').textContent = wpm;
-      const sesiones=JSON.parse(localStorage.getItem('sesiones')||'[]');
-      sesiones.push({fecha:new Date().toLocaleString(),modo:'rapidez',detalle:`${wpm} ppm`});
-      localStorage.setItem('sesiones',JSON.stringify(sesiones));
-      const rating=document.getElementById('rating');
-      rating.innerHTML='';
-      const estrellas=porcentaje>=80?5:porcentaje>=60?4:porcentaje>=40?3:porcentaje>=20?2:1;
-      for(let i=0;i<5;i++){
-        const span=document.createElement('span');
-        span.className='material-icons text-2xl ' + (i<estrellas?'text-yellow-400':'text-gray-300');
-        span.textContent='star';
-        rating.appendChild(span);
-      }
-      generarPreguntas();
-    }
-
-    function generarPreguntas(){
-      const cont=document.getElementById('preguntas');
-      cont.innerHTML='';
-      const pool=Object.values(palabras).flatMap(o=>Object.values(o).flat());
-      const usados=[...palabrasSeleccionadas];
-      while(usados.length<5){
-        const rnd=pool[Math.floor(Math.random()*pool.length)];
-        if(!usados.includes(rnd)) usados.push(rnd);
-      }
-      usados.sort(()=>Math.random()-0.5);
-      const seleccion=usados.slice(0,5);
-      let idx=0,ac=0;
-      function mostrar(){
-        cont.innerHTML='';
-        const w=seleccion[idx];
-        const div=document.createElement('div');
-        div.className='mb-2';
-        div.innerHTML=`<p class="mb-1">¿La palabra <strong>${w}</strong> apareció?</p>
-        <label class="mr-2"><input type="radio" name="resp" value="si"> Sí</label>
-        <label><input type="radio" name="resp" value="no"> No</label>`;
-        cont.appendChild(div);
-        const btn=document.createElement('button');
-        btn.textContent=idx<seleccion.length-1?'Siguiente':'Comprobar';
-        btn.className='btn-primary mt-4';
-        btn.onclick=()=>{
-          const ans=cont.querySelector('input[name="resp"]:checked');
-          if(ans && ans.value===(palabrasSeleccionadas.includes(w)?'si':'no')) ac++;
-          idx++;
-          if(idx<seleccion.length){mostrar();}
-          else{
-            cont.classList.add('hidden');
-            document.getElementById('resultadoMemoria').textContent=`Memoria: ${ac}/${seleccion.length} correctas`;
-          }
-        };
-        cont.appendChild(btn);
-        cont.classList.remove('hidden');
-        document.getElementById('resultadoMemoria').textContent='';
-      }
-      mostrar();
     }
 
     function startGame(){
@@ -433,6 +381,46 @@
       iniciarReconocimiento();
     }
 
+    function resetGame() {
+      // Detenemos reconocimiento y cronómetro si están activos
+      if (reconocedor) try { reconocedor.stop(); } catch(e){}
+      clearInterval(cronometro);
+
+      // Limpiamos variables y UI
+      indice = 0;
+      correctas = 0;
+      incorrectas = 0;
+      correctasNivel = 0;
+      document.getElementById('corr').textContent = 0;
+      document.getElementById('incorr').textContent = 0;
+      document.getElementById('tiempo').textContent = 0;
+      document.getElementById('resultado').textContent = '';
+      document.getElementById('juego').innerHTML = `
+      <button id="playBtn" aria-label="Iniciar juego" class="absolute inset-0 flex items-center justify-center focus:outline-none group">
+        <div class="flex shrink-0 items-center justify-center rounded-full size-20 bg-black/50 hover:bg-black/70 text-white transition-all duration-300 group-focus:ring-4 group-focus:ring-[var(--primary-color)] group-focus:ring-opacity-50">
+          <span class="material-icons text-5xl">play_arrow</span>
+        </div>
+      </button>`;
+      document.getElementById('juego').classList.add('hidden');
+      document.getElementById('config').classList.remove('hidden');
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('info').classList.add('hidden');
+      document.getElementById('preguntas').classList.add('hidden');
+
+      // Volver a conectar botón play
+      setTimeout(() => {
+        const playBtn = document.getElementById('playBtn');
+        if (playBtn) {
+          playBtn.addEventListener('click', () => {
+            document.getElementById('playBtn').classList.add('hidden');
+            document.getElementById('juego').classList.remove('hidden');
+            startGame();
+          });
+        }
+      }, 0);
+    }
+
+    // Listeners para el flujo del juego
     document.getElementById('iniciar').addEventListener('click', () => {
       document.getElementById('config').classList.add('hidden');
       document.getElementById('juego').classList.remove('hidden');
@@ -441,16 +429,17 @@
 
     document.getElementById('playBtn').addEventListener('click', () => {
       document.getElementById('playBtn').classList.add('hidden');
+      document.getElementById('juego').classList.remove('hidden');
       startGame();
     });
 
-    document.getElementById('btnReiniciar').addEventListener('click', () => {
-      location.reload();
-    });
+    document.getElementById('btnReiniciar').addEventListener('click', resetGame);
 
     document.getElementById('btnVolver').addEventListener('click', () => {
       window.location.href = 'index.html';
     });
+
+    // ...resto de tu código necesario para cargar palabras, manejar temas, etc...
   </script>
 </body>
 </html>
