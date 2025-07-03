@@ -49,11 +49,25 @@
     }
   </style>
   <style>
-    @keyframes mover-izq {from {transform: translateX(100%);} to {transform: translateX(-100%);}}
-    @keyframes mover-der {from {transform: translateX(-100%);} to {transform: translateX(100%);}}
-    .animate-word-initial { opacity: 0.95; animation: none; }
-    .animate-word-correct { animation: none; color: var(--accent-green);}
-    .animate-word-incorrect { animation: moveWord var(--duracion,5s) linear forwards; color: var(--accent-orange);}
+    @keyframes mover-izq {
+      from { transform: translateX(100%); opacity: 1; }
+      to { transform: translateX(-100%); opacity: 1; }
+    }
+    @keyframes mover-der {
+      from { transform: translateX(-100%); opacity: 1; }
+      to { transform: translateX(100%); opacity: 1; }
+    }
+    .animate-word-initial {
+      opacity: 0.95;
+      animation: none;
+    }
+    .animate-word-correct {
+      animation: none;
+      color: var(--accent-green);
+    }
+    .animate-word-incorrect {
+      color: var(--accent-orange);
+    }
   </style>
 </head>
 <body class="bg-gray-50" style="font-family: Lexend, 'Noto Sans', sans-serif;">
@@ -309,7 +323,7 @@
       span.id = 'palabra-'+indice;
       span.textContent = palabra;
       const duracion = velocidades[velIndex];
-      span.className = 'absolute top-1/2 left-0 text-3xl font-bold whitespace-nowrap animate-word-initial';
+      span.className = 'absolute top-1/2 left-0 -translate-y-1/2 text-3xl font-bold whitespace-nowrap animate-word-initial';
       span.style.setProperty('--duracion', `${duracion}s`);
       span.addEventListener('animationend', () => {
         if (!span.classList.contains('animate-word-correct')) {
