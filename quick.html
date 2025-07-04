@@ -53,7 +53,7 @@
     @keyframes mover-der {from {transform: translateX(-100%);} to {transform: translateX(100%);}}
     .animate-word-initial { opacity: 0.95; animation: none; }
     .animate-word-correct { animation: none; color: var(--accent-green);}
-    .animate-word-incorrect { animation: moveWord var(--duracion,5s) linear forwards; color: var(--accent-orange);}
+    .animate-word-incorrect { color: var(--accent-orange); }
   </style>
 </head>
 <body class="bg-gray-50" style="font-family: Lexend, 'Noto Sans', sans-serif;">
@@ -128,10 +128,9 @@
               </button>
             </div>
           </div>
-          </div>
           <div id="preguntas" class="bg-white shadow rounded-xl p-4 mt-4 hidden"></div>
           <div id="resultadoMemoria" class="p-4 font-semibold"></div>
-          <div id="config" class="p-6 sm:p-8 border-t border-[var(--border-color)]">
+          <div id="config" class="p-6 sm:p-8 border-t border-[var(--border-color)] text-center">
             <h1 class="text-[var(--text-primary-color)] tracking-tight text-2xl sm:text-3xl font-bold leading-tight">Ajustes del Juego de Rapidez</h1>
             <p class="text-[var(--text-secondary-color)] mt-1 text-sm">Personaliza tu experiencia de juego para mejorar tu velocidad de lectura.</p>
           </div>
@@ -258,11 +257,11 @@
     });
 
     // Variables y configuración inicial
+    const extensiones = ['cortas','medianas','largas'];
     let indice = 0, correctas = 0, incorrectas = 0, correctasNivel = 0;
     let cronometro, reconocedor, palabrasSeleccionadas = [];
     const velocidades=[8,5,3];
-    let velIndex=1, nivelInicio, inicioTiempo;
-    // Asume que la variable 'palabras' está definida en tu código original
+    let velIndex=1, extIndex=0, nivelInicio, inicioTiempo, temaActual;
 
     function iniciarReconocimiento() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -274,28 +273,28 @@
       reconocedor.lang = "es-ES";
       reconocedor.continuous = true;
       reconocedor.onresult = e => {
-        const txt = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
+        const txt = e.results[e.results.length - 1][0].transcript.trim().toLowerCase();
         const palabra = palabrasSeleccionadas[indice];
         if (!palabra) return;
-        if (txt.includes(palabra.toLowerCase().replace(/\./g,''))) {
-          const span = document.getElementById('palabra-'+indice);
+        if (txt.includes(palabra.toLowerCase().replace(/\./g, ''))) {
+          const span = document.getElementById('palabra-' + indice);
           span.classList.remove('animate-word-initial');
           span.classList.add('animate-word-correct');
+          setTimeout(() => span.remove(), 100);
           correctas++;
           correctasNivel++;
           document.getElementById('corr').textContent = correctas;
           indice++;
-          if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
-            if(velIndex < velocidades.length-1) velIndex++;
-            nivelInicio=Date.now();
-            correctasNivel=0;
+          if (correctasNivel >= 5 || Date.now() - nivelInicio >= 30000) {
+            if (velIndex < velocidades.length - 1) velIndex++;
+            if (extIndex < extensiones.length - 1) extIndex++;
+            nivelInicio = Date.now();
+            correctasNivel = 0;
           }
-          if(Date.now()-inicioTiempo>=60000){
+          if (Date.now() - inicioTiempo >= 60000) {
             finalizar();
-          } else if (indice < palabrasSeleccionadas.length) {
-            setTimeout(mostrarPalabra, 300);
           } else {
-            finalizar();
+            setTimeout(mostrarPalabra, 300);
           }
         }
       };
@@ -305,8 +304,14 @@
     function mostrarPalabra() {
       const juego = document.getElementById('juego');
       juego.innerHTML = '';
-      if (indice >= palabrasSeleccionadas.length) return;
-      const palabra = palabrasSeleccionadas[indice];
+      if(Date.now()-inicioTiempo>=60000){
+        finalizar();
+        return;
+      }
+      const lista = palabras[temaActual][extensiones[extIndex]] || [];
+      if (!lista.length) return;
+      const palabra = lista[Math.floor(Math.random() * lista.length)];
+      palabrasSeleccionadas[indice] = palabra;
       const span = document.createElement('span');
       span.id = 'palabra-'+indice;
       span.textContent = palabra;
@@ -316,18 +321,21 @@
       span.addEventListener('animationend', () => {
         if (!span.classList.contains('animate-word-correct')) {
           span.classList.add('animate-word-incorrect');
+          setTimeout(() => span.remove(), 100);
           incorrectas++;
           document.getElementById('incorr').textContent = incorrectas;
           indice++;
           if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
             if(velIndex < velocidades.length-1) velIndex++;
+            if(extIndex < extensiones.length-1) extIndex++;
             nivelInicio=Date.now();
             correctasNivel=0;
           }
           if(Date.now()-inicioTiempo>=60000){
             finalizar();
-          } else if (indice < palabrasSeleccionadas.length) mostrarPalabra();
-          else finalizar();
+          } else {
+            mostrarPalabra();
+          }
         }
       });
       const direccion = document.querySelector('input[name="direccion"]:checked').value;
@@ -344,7 +352,7 @@
       document.getElementById('feedback').classList.remove('hidden');
       const tiempoTotal = Math.floor((Date.now() - inicioTiempo) / 1000);
       const wpm = Math.round(correctas / (tiempoTotal / 60 || 1));
-      const total = palabrasSeleccionadas.length;
+      const total = indice;
       const porcentaje = Math.round((correctas / total) * 100);
       let nivel = porcentaje >= 80 ? 'Avanzado' : porcentaje >= 50 ? 'Intermedio' : 'Inicial';
       document.getElementById('resultado').textContent = `¡Bien hecho! Nivel ${nivel}`;
@@ -354,9 +362,11 @@
     }
 
     function startGame(){
-      const tema = document.getElementById('tema').value;
+      temaActual = document.getElementById('tema').value;
       const ext = document.querySelector('input[name="extension"]:checked').value;
-      palabrasSeleccionadas = [...(palabras[tema] && palabras[tema][ext] ? palabras[tema][ext] : [])];
+      extIndex = extensiones.indexOf(ext);
+      if(extIndex===-1) extIndex = 0;
+      palabrasSeleccionadas = [];
       indice = 0;
       correctas = 0;
       incorrectas = 0;
@@ -391,6 +401,9 @@
       correctas = 0;
       incorrectas = 0;
       correctasNivel = 0;
+      extIndex = 0;
+      temaActual = null;
+      palabrasSeleccionadas = [];
       document.getElementById('corr').textContent = 0;
       document.getElementById('incorr').textContent = 0;
       document.getElementById('tiempo').textContent = 0;
