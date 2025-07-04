@@ -53,7 +53,7 @@
     @keyframes mover-der {from {transform: translateX(-100%);} to {transform: translateX(100%);}}
     .animate-word-initial { opacity: 0.95; animation: none; }
     .animate-word-correct { animation: none; color: var(--accent-green);}
-    .animate-word-incorrect { animation: moveWord var(--duracion,5s) linear forwards; color: var(--accent-orange);}
+    .animate-word-incorrect { color: var(--accent-orange); }
   </style>
 </head>
 <body class="bg-gray-50" style="font-family: Lexend, 'Noto Sans', sans-serif;">
@@ -76,7 +76,7 @@
           <button class="sm:hidden text-[var(--text-secondary-color)]"><span class="material-icons text-3xl">menu</span></button>
         </div>
       </header>
-      <main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
+      <main class="flex flex-1 flex-col items-center gap-6 py-8 px-4 sm:px-6 lg:px-8">
         <div class="settings-card w-full max-w-2xl">
           <div id="info" class="flex justify-between text-sm px-6 py-2 hidden bg-[var(--secondary-color)]">
             <span>Correctas: <span id="corr">0</span></span>
@@ -128,10 +128,11 @@
               </button>
             </div>
           </div>
-          </div>
           <div id="preguntas" class="bg-white shadow rounded-xl p-4 mt-4 hidden"></div>
           <div id="resultadoMemoria" class="p-4 font-semibold"></div>
-          <div id="config" class="p-6 sm:p-8 border-t border-[var(--border-color)]">
+        </div>
+        <div class="settings-card w-full max-w-2xl">
+          <div id="config" class="p-6 sm:p-8 border-b border-[var(--border-color)] text-center">
             <h1 class="text-[var(--text-primary-color)] tracking-tight text-2xl sm:text-3xl font-bold leading-tight">Ajustes del Juego de Rapidez</h1>
             <p class="text-[var(--text-secondary-color)] mt-1 text-sm">Personaliza tu experiencia de juego para mejorar tu velocidad de lectura.</p>
           </div>
@@ -257,10 +258,12 @@
       reader.readAsText(file);
     });
 
-    let indice = 0, correctas = 0, incorrectas = 0;
+    // Variables y configuración inicial
+    const extensiones = ['cortas','medianas','largas'];
+    let indice = 0, correctas = 0, incorrectas = 0, correctasNivel = 0;
     let cronometro, reconocedor, palabrasSeleccionadas = [];
     const velocidades=[8,5,3];
-    let velIndex=1, nivelInicio, correctasNivel=0, inicioTiempo;
+    let velIndex=1, extIndex=0, nivelInicio, inicioTiempo, temaActual;
 
     function iniciarReconocimiento() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -272,28 +275,28 @@
       reconocedor.lang = "es-ES";
       reconocedor.continuous = true;
       reconocedor.onresult = e => {
-        const txt = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
+        const txt = e.results[e.results.length - 1][0].transcript.trim().toLowerCase();
         const palabra = palabrasSeleccionadas[indice];
         if (!palabra) return;
-        if (txt.includes(palabra.toLowerCase().replace(/\./g,''))) {
-          const span = document.getElementById('palabra-'+indice);
+        if (txt.includes(palabra.toLowerCase().replace(/\./g, ''))) {
+          const span = document.getElementById('palabra-' + indice);
           span.classList.remove('animate-word-initial');
           span.classList.add('animate-word-correct');
+          setTimeout(() => span.remove(), 100);
           correctas++;
           correctasNivel++;
           document.getElementById('corr').textContent = correctas;
           indice++;
-          if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
-            if(velIndex < velocidades.length-1) velIndex++;
-            nivelInicio=Date.now();
-            correctasNivel=0;
+          if (correctasNivel >= 5 || Date.now() - nivelInicio >= 30000) {
+            if (velIndex < velocidades.length - 1) velIndex++;
+            if (extIndex < extensiones.length - 1) extIndex++;
+            nivelInicio = Date.now();
+            correctasNivel = 0;
           }
-          if(Date.now()-inicioTiempo>=60000){
+          if (Date.now() - inicioTiempo >= 60000) {
             finalizar();
-          } else if (indice < palabrasSeleccionadas.length) {
-            setTimeout(mostrarPalabra, 300);
           } else {
-            finalizar();
+            setTimeout(mostrarPalabra, 300);
           }
         }
       };
@@ -303,8 +306,14 @@
     function mostrarPalabra() {
       const juego = document.getElementById('juego');
       juego.innerHTML = '';
-      if (indice >= palabrasSeleccionadas.length) return;
-      const palabra = palabrasSeleccionadas[indice];
+      if(Date.now()-inicioTiempo>=60000){
+        finalizar();
+        return;
+      }
+      const lista = palabras[temaActual][extensiones[extIndex]] || [];
+      if (!lista.length) return;
+      const palabra = lista[Math.floor(Math.random() * lista.length)];
+      palabrasSeleccionadas[indice] = palabra;
       const span = document.createElement('span');
       span.id = 'palabra-'+indice;
       span.textContent = palabra;
@@ -314,18 +323,21 @@
       span.addEventListener('animationend', () => {
         if (!span.classList.contains('animate-word-correct')) {
           span.classList.add('animate-word-incorrect');
+          setTimeout(() => span.remove(), 100);
           incorrectas++;
           document.getElementById('incorr').textContent = incorrectas;
           indice++;
           if(correctasNivel>=5 || Date.now()-nivelInicio>=30000){
             if(velIndex < velocidades.length-1) velIndex++;
+            if(extIndex < extensiones.length-1) extIndex++;
             nivelInicio=Date.now();
             correctasNivel=0;
           }
           if(Date.now()-inicioTiempo>=60000){
             finalizar();
-          } else if (indice < palabrasSeleccionadas.length) mostrarPalabra();
-          else finalizar();
+          } else {
+            mostrarPalabra();
+          }
         }
       });
       const direccion = document.querySelector('input[name="direccion"]:checked').value;
@@ -336,79 +348,27 @@
     }
 
     function finalizar() {
-      if (reconocedor) reconocedor.stop();
+      if (reconocedor) try { reconocedor.stop(); } catch(e){}
       clearInterval(cronometro);
       document.getElementById('info').classList.add('hidden');
       document.getElementById('feedback').classList.remove('hidden');
       const tiempoTotal = Math.floor((Date.now() - inicioTiempo) / 1000);
       const wpm = Math.round(correctas / (tiempoTotal / 60 || 1));
-      const total = palabrasSeleccionadas.length;
+      const total = indice;
       const porcentaje = Math.round((correctas / total) * 100);
       let nivel = porcentaje >= 80 ? 'Avanzado' : porcentaje >= 50 ? 'Intermedio' : 'Inicial';
       document.getElementById('resultado').textContent = `¡Bien hecho! Nivel ${nivel}`;
       document.getElementById('fb-corr').textContent = correctas;
       document.getElementById('fb-incorr').textContent = incorrectas;
       document.getElementById('fb-wpm').textContent = wpm;
-      const sesiones=JSON.parse(localStorage.getItem('sesiones')||'[]');
-      sesiones.push({fecha:new Date().toLocaleString(),modo:'rapidez',detalle:`${wpm} ppm`});
-      localStorage.setItem('sesiones',JSON.stringify(sesiones));
-      const rating=document.getElementById('rating');
-      rating.innerHTML='';
-      const estrellas=porcentaje>=80?5:porcentaje>=60?4:porcentaje>=40?3:porcentaje>=20?2:1;
-      for(let i=0;i<5;i++){
-        const span=document.createElement('span');
-        span.className='material-icons text-2xl ' + (i<estrellas?'text-yellow-400':'text-gray-300');
-        span.textContent='star';
-        rating.appendChild(span);
-      }
-      generarPreguntas();
-    }
-
-    function generarPreguntas(){
-      const cont=document.getElementById('preguntas');
-      cont.innerHTML='';
-      const pool=Object.values(palabras).flatMap(o=>Object.values(o).flat());
-      const usados=[...palabrasSeleccionadas];
-      while(usados.length<5){
-        const rnd=pool[Math.floor(Math.random()*pool.length)];
-        if(!usados.includes(rnd)) usados.push(rnd);
-      }
-      usados.sort(()=>Math.random()-0.5);
-      const seleccion=usados.slice(0,5);
-      let idx=0,ac=0;
-      function mostrar(){
-        cont.innerHTML='';
-        const w=seleccion[idx];
-        const div=document.createElement('div');
-        div.className='mb-2';
-        div.innerHTML=`<p class="mb-1">¿La palabra <strong>${w}</strong> apareció?</p>
-        <label class="mr-2"><input type="radio" name="resp" value="si"> Sí</label>
-        <label><input type="radio" name="resp" value="no"> No</label>`;
-        cont.appendChild(div);
-        const btn=document.createElement('button');
-        btn.textContent=idx<seleccion.length-1?'Siguiente':'Comprobar';
-        btn.className='btn-primary mt-4';
-        btn.onclick=()=>{
-          const ans=cont.querySelector('input[name="resp"]:checked');
-          if(ans && ans.value===(palabrasSeleccionadas.includes(w)?'si':'no')) ac++;
-          idx++;
-          if(idx<seleccion.length){mostrar();}
-          else{
-            cont.classList.add('hidden');
-            document.getElementById('resultadoMemoria').textContent=`Memoria: ${ac}/${seleccion.length} correctas`;
-          }
-        };
-        cont.appendChild(btn);
-        cont.classList.remove('hidden');
-        document.getElementById('resultadoMemoria').textContent='';
-      }
-      mostrar();
     }
 
     function startGame(){
-      const tema = document.getElementById('tema').value;
+      temaActual = document.getElementById('tema').value;
       const ext = document.querySelector('input[name="extension"]:checked').value;
-      palabrasSeleccionadas = [...(palabras[tema] && palabras[tema][ext] ? palabras[tema][ext] : [])];
+      extIndex = extensiones.indexOf(ext);
+      if(extIndex===-1) extIndex = 0;
+      palabrasSeleccionadas = [];
       indice = 0;
       correctas = 0;
       incorrectas = 0;
@@ -433,6 +393,49 @@
       iniciarReconocimiento();
     }
 
+    function resetGame() {
+      // Detenemos reconocimiento y cronómetro si están activos
+      if (reconocedor) try { reconocedor.stop(); } catch(e){}
+      clearInterval(cronometro);
+
+      // Limpiamos variables y UI
+      indice = 0;
+      correctas = 0;
+      incorrectas = 0;
+      correctasNivel = 0;
+      extIndex = 0;
+      temaActual = null;
+      palabrasSeleccionadas = [];
+      document.getElementById('corr').textContent = 0;
+      document.getElementById('incorr').textContent = 0;
+      document.getElementById('tiempo').textContent = 0;
+      document.getElementById('resultado').textContent = '';
+      document.getElementById('juego').innerHTML = `
+      <button id="playBtn" aria-label="Iniciar juego" class="absolute inset-0 flex items-center justify-center focus:outline-none group">
+        <div class="flex shrink-0 items-center justify-center rounded-full size-20 bg-black/50 hover:bg-black/70 text-white transition-all duration-300 group-focus:ring-4 group-focus:ring-[var(--primary-color)] group-focus:ring-opacity-50">
+          <span class="material-icons text-5xl">play_arrow</span>
+        </div>
+      </button>`;
+      document.getElementById('juego').classList.add('hidden');
+      document.getElementById('config').classList.remove('hidden');
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('info').classList.add('hidden');
+      document.getElementById('preguntas').classList.add('hidden');
+
+      // Volver a conectar botón play
+      setTimeout(() => {
+        const playBtn = document.getElementById('playBtn');
+        if (playBtn) {
+          playBtn.addEventListener('click', () => {
+            document.getElementById('playBtn').classList.add('hidden');
+            document.getElementById('juego').classList.remove('hidden');
+            startGame();
+          });
+        }
+      }, 0);
+    }
+
+    // Listeners para el flujo del juego
     document.getElementById('iniciar').addEventListener('click', () => {
       document.getElementById('config').classList.add('hidden');
       document.getElementById('juego').classList.remove('hidden');
@@ -441,16 +444,17 @@
 
     document.getElementById('playBtn').addEventListener('click', () => {
       document.getElementById('playBtn').classList.add('hidden');
+      document.getElementById('juego').classList.remove('hidden');
       startGame();
     });
 
-    document.getElementById('btnReiniciar').addEventListener('click', () => {
-      location.reload();
-    });
+    document.getElementById('btnReiniciar').addEventListener('click', resetGame);
 
     document.getElementById('btnVolver').addEventListener('click', () => {
       window.location.href = 'index.html';
     });
+
+    // ...resto de tu código necesario para cargar palabras, manejar temas, etc...
   </script>
 </body>
 </html>
