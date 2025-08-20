@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard COU - Big Data Urbano</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1"></script>
+  <style>
+    body { font-family: 'Lexend', 'Noto Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-600">Centro de Operaciones Urbanas</h1>
+    <div class="flex items-center gap-4">
+      <button id="toggleSim" class="px-4 py-2 rounded bg-green-500 text-white">Iniciar Simulación</button>
+      <span>Tiempo: <span id="time">0s</span></span>
+    </div>
+  </header>
+
+  <main class="flex-1 p-4 space-y-6">
+    <!-- Controles y desafíos -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded shadow space-y-2">
+        <h2 class="font-semibold">Eventos Urbanos</h2>
+        <div class="flex flex-wrap gap-2">
+          <button id="accidentBtn" class="px-2 py-1 bg-yellow-500 text-white rounded">Simular Accidente 🚗💥</button>
+          <button id="massEventBtn" class="px-2 py-1 bg-indigo-500 text-white rounded">Evento Masivo 🏟️🎉</button>
+          <button id="heatwaveBtn" class="px-2 py-1 bg-orange-500 text-white rounded">Ola de Calor 🔥🌡️</button>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded shadow space-y-2">
+        <h2 class="font-semibold">Intervenciones</h2>
+        <div class="flex flex-wrap gap-2">
+          <button id="optimizeBtn" class="px-2 py-1 bg-emerald-500 text-white rounded">Optimizar Semáforos 🚦➡️</button>
+          <button id="resetEventsBtn" class="px-2 py-1 bg-gray-500 text-white rounded">Restablecer Eventos 🔄</button>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-2">Desafío del Analista de Datos</h2>
+        <p id="challenge" class="text-sm text-gray-700">Pulsa iniciar para comenzar...</p>
+      </div>
+    </section>
+
+    <!-- Métricas -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Traffic -->
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-semibold text-lg mb-1">Tráfico (veh/min) 🚗</h3>
+        <div id="traffic-value" class="text-3xl font-bold mb-2">0</div>
+        <canvas id="traffic-chart" height="120"></canvas>
+        <div class="mt-2 text-sm text-gray-600">
+          <p><strong>Qué mide:</strong> La cantidad de vehículos que pasan por un punto clave por minuto.</p>
+          <p><strong>Lugar de Referencia:</strong> Sensores de tráfico en intersecciones críticas.</p>
+          <p><strong>Relevancia en Big Data:</strong> Optimización de movilidad y semáforos.</p>
+        </div>
+      </div>
+      <!-- Temperature -->
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-semibold text-lg mb-1">Temperatura (°C) 🌡️</h3>
+        <div id="temp-value" class="text-3xl font-bold mb-2">0</div>
+        <canvas id="temp-chart" height="120"></canvas>
+        <div class="mt-2 text-sm text-gray-600">
+          <p><strong>Qué mide:</strong> La temperatura ambiente en una zona específica.</p>
+          <p><strong>Lugar de Referencia:</strong> Estaciones meteorológicas urbanas.</p>
+          <p><strong>Relevancia en Big Data:</strong> Gestión energética y salud pública.</p>
+        </div>
+      </div>
+      <!-- Energy -->
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-semibold text-lg mb-1">Uso de Energía (kWh) 💡</h3>
+        <div id="energy-value" class="text-3xl font-bold mb-2">0</div>
+        <canvas id="energy-chart" height="120"></canvas>
+        <div class="mt-2 text-sm text-gray-600">
+          <p><strong>Qué mide:</strong> El consumo de electricidad en un distrito.</p>
+          <p><strong>Lugar de Referencia:</strong> Contadores inteligentes.</p>
+          <p><strong>Relevancia en Big Data:</strong> Optimización de la red eléctrica.</p>
+        </div>
+      </div>
+      <!-- Air -->
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="font-semibold text-lg mb-1">Calidad del Aire (PM2.5) 💨</h3>
+        <div id="air-value" class="text-3xl font-bold mb-2">0</div>
+        <canvas id="air-chart" height="120"></canvas>
+        <div class="mt-2 text-sm text-gray-600">
+          <p><strong>Qué mide:</strong> Concentración de partículas finas en el aire.</p>
+          <p><strong>Lugar de Referencia:</strong> Sensores distribuidos por la ciudad.</p>
+          <p><strong>Relevancia en Big Data:</strong> Salud pública y políticas ambientales.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Log -->
+    <section class="bg-white p-4 rounded shadow">
+      <h2 class="font-semibold mb-2">Registro de Incidentes y Acciones</h2>
+      <div id="log" class="h-40 overflow-y-auto text-sm bg-gray-50 p-2 rounded"></div>
+    </section>
+
+    <!-- Información adicional -->
+    <section class="space-y-4">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-2">Flujo de Datos</h2>
+        <p class="text-sm text-gray-700">En una ciudad real, los datos de sensores se envían a plataformas de Big Data en la nube (Data Lakes, Data Warehouses) donde se procesan mediante IA y Machine Learning para generar información útil en tiempo real.</p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-2">Resolución Remota</h2>
+        <p class="text-sm text-gray-700">Desde un COU, los analistas monitorean los dashboards, generan alertas y pueden activar acciones remotas como el despacho de equipos o el ajuste de infraestructura.</p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-2">Preguntas para Reflexionar</h2>
+        <ul class="list-disc ml-6 text-sm text-gray-700 space-y-1">
+          <li>¿Qué métricas parecen correlacionarse entre sí?</li>
+          <li>¿Qué eventos causan mayores cambios en los datos?</li>
+          <li>¿Cómo podría la ciudad usar estos datos para mejorar la calidad de vida?</li>
+        </ul>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-2">Caso de Uso: Sincronización Inteligente de Semáforos</h2>
+        <p class="text-sm text-gray-700">La sincronización inteligente analiza en tiempo real los datos de tráfico con IA/ML para ajustar los tiempos de los semáforos, reduciendo congestiones, emisiones y mejorando la seguridad.</p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-2">Ejemplos de Ciudades con COU</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+          <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Rio_de_Janeiro_Centro_de_Operacoes.jpg" alt="COR Rio" class="w-full h-32 object-cover rounded mb-1"/>
+            <p><strong>Río de Janeiro:</strong> El Centro de Operações monitorea eventos y movilidad en toda la ciudad.</p>
+          </div>
+          <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Singapore_City_Hall.jpg" alt="Singapur" class="w-full h-32 object-cover rounded mb-1"/>
+            <p><strong>Singapur:</strong> Paneles integrados para transporte, energía y seguridad ciudadana.</p>
+          </div>
+          <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/58/Boston_Skyline_from_LASED.JPG" alt="Boston" class="w-full h-32 object-cover rounded mb-1"/>
+            <p><strong>Boston:</strong> Iniciativas de datos abiertos para mejorar servicios públicos.</p>
+          </div>
+          <div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Amsterdam_at_night.jpg" alt="Ámsterdam" class="w-full h-32 object-cover rounded mb-1"/>
+            <p><strong>Ámsterdam:</strong> Uso de datos urbanos para gestión ambiental y movilidad.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  // ----- Configuración inicial -----
+  const maxDataPoints = 50; // tamaño máximo de historial en gráficos
+  let simInterval;        // referencia al setInterval principal
+  let startTimestamp;     // marca de tiempo de inicio
+  let elapsed = 0;        // segundos transcurridos
+  let challengeCounter = 0; // contador para desafíos
+
+  const events = {
+    accident: {active:false, until:0},
+    massEvent: {active:false, until:0},
+    heatwave: {active:false, until:0},
+    optimize: {active:false, until:0}
+  };
+
+  const challenges = [
+    'El tráfico aumentó drásticamente, ¿qué solución propones?',
+    'La temperatura supera el rango normal, ¿qué efectos podría tener?',
+    'El uso de energía está en pico, ¿cómo reducirías el consumo?',
+    'La calidad del aire es mala, ¿qué políticas aplicarías?'
+  ];
+
+  const metricConfig = {
+    traffic: {el:'traffic', unit:'veh/min', normal:[20,50], alert:70},
+    temp: {el:'temp', unit:'°C', normal:[18,28], alert:32},
+    energy: {el:'energy', unit:'kWh', normal:[150,300], alert:350},
+    air: {el:'air', unit:'PM2.5', normal:[20,50], alert:60}
+  };
+
+  const charts = {};
+
+  // Crear gráficos para cada métrica
+  for (const key in metricConfig) {
+    const cfg = metricConfig[key];
+    const ctx = document.getElementById(`${cfg.el}-chart`).getContext('2d');
+    charts[key] = new Chart(ctx, {
+      type:'line',
+      data:{labels:[], datasets:[{data:[], borderColor:'rgb(59,130,246)', tension:0.3, pointRadius:0}]},
+      options:{
+        animation:false,
+        responsive:true,
+        plugins:{
+          legend:{display:false},
+          annotation:{
+            annotations:{range:{type:'box', yMin:cfg.normal[0], yMax:cfg.normal[1], backgroundColor:'rgba(16,185,129,0.2)'}}
+          }
+        },
+        scales:{y:{beginAtZero:true}}
+      }
+    });
+  }
+
+  // Utilidad para número aleatorio en rango
+  function rand(min,max){return Math.random()*(max-min)+min;}
+
+  // Añadir entrada al log
+  function log(msg){
+    const logEl=document.getElementById('log');
+    const p=document.createElement('p');
+    p.textContent=`[${elapsed}s] ${msg}`;
+    logEl.appendChild(p);
+    logEl.scrollTop=logEl.scrollHeight;
+  }
+
+  // Actualizar cada métrica y su gráfico
+  function updateMetric(key,value){
+    const cfg=metricConfig[key];
+    const chart=charts[key];
+    chart.data.labels.push('');
+    chart.data.datasets[0].data.push(value);
+    if(chart.data.labels.length>maxDataPoints){chart.data.labels.shift();chart.data.datasets[0].data.shift();}
+    chart.update();
+    const valEl=document.getElementById(`${cfg.el}-value`);
+    valEl.textContent=value.toFixed(1)+` ${cfg.unit}`;
+    if(value>cfg.alert){valEl.classList.add('text-red-500');} else {valEl.classList.remove('text-red-500');}
+  }
+
+  // Lógica de generación de datos base
+  function baseValues(){
+    return {
+      traffic: 30 + 10*Math.sin(elapsed/10) + rand(-5,5),
+      temp: 23 + 5*Math.sin(elapsed/20) + rand(-2,2),
+      energy: 220 + 50*Math.sin(elapsed/15) + rand(-20,20),
+      air: 35 + 10*Math.sin(elapsed/18) + rand(-5,5)
+    };
+  }
+
+  // Aplicar efectos de eventos e intervenciones
+  function applyEvents(vals){
+    if(events.accident.active){vals.traffic+=40; vals.air+=20;}
+    if(events.massEvent.active){vals.traffic+=25; vals.energy+=80;}
+    if(events.heatwave.active){vals.temp+=10; vals.energy+=60;}
+    if(events.optimize.active){vals.traffic-=25; vals.air-=15;}
+    vals.traffic=Math.max(0,vals.traffic);
+    vals.energy=Math.max(0,vals.energy);
+    vals.air=Math.max(0,vals.air);
+    return vals;
+  }
+
+  // Control de expiración de eventos
+  function updateEvents(){
+    const now=elapsed;
+    for(const k in events){
+      if(events[k].active && now>=events[k].until){
+        events[k].active=false;
+        log(`${k} finalizó`);
+      }
+    }
+  }
+
+  // Mostrar desafío aleatorio
+  function showChallenge(){
+    const ch=challenges[Math.floor(Math.random()*challenges.length)];
+    document.getElementById('challenge').textContent=ch;
+  }
+
+  // Bucle principal de simulación
+  function tick(){
+    try{
+      elapsed=Math.floor((Date.now()-startTimestamp)/1000);
+      document.getElementById('time').textContent=elapsed+'s';
+      updateEvents();
+      let vals=baseValues();
+      vals=applyEvents(vals);
+      updateMetric('traffic',vals.traffic);
+      updateMetric('temp',vals.temp);
+      updateMetric('energy',vals.energy);
+      updateMetric('air',vals.air);
+      challengeCounter--;
+      if(challengeCounter<=0){showChallenge();challengeCounter=15;}
+    }catch(err){
+      console.error(err);
+      log('Error: '+err.message);
+    }
+  }
+
+  // Iniciar simulación
+  function start(){
+    startTimestamp=Date.now();
+    challengeCounter=1;
+    simInterval=setInterval(tick,1000);
+    document.getElementById('toggleSim').textContent='Detener Simulación';
+    document.getElementById('toggleSim').classList.remove('bg-green-500');
+    document.getElementById('toggleSim').classList.add('bg-red-500');
+    log('Simulación iniciada');
+  }
+
+  // Detener y limpiar
+  function stop(){
+    clearInterval(simInterval);
+    for(const k in charts){charts[k].data.labels=[];charts[k].data.datasets[0].data=[];charts[k].update();}
+    for(const ev in events){events[ev].active=false;events[ev].until=0;}
+    document.getElementById('log').innerHTML='';
+    elapsed=0;document.getElementById('time').textContent='0s';
+    document.getElementById('toggleSim').textContent='Iniciar Simulación';
+    document.getElementById('toggleSim').classList.remove('bg-red-500');
+    document.getElementById('toggleSim').classList.add('bg-green-500');
+  }
+
+  document.getElementById('toggleSim').addEventListener('click',()=>{
+    if(simInterval){stop();simInterval=null;} else {start();}
+  });
+
+  // Botones de eventos
+  document.getElementById('accidentBtn').addEventListener('click',()=>{
+    events.accident={active:true, until:elapsed+20};
+    log('Accidente de tráfico detectado en la Zona Central');
+  });
+  document.getElementById('massEventBtn').addEventListener('click',()=>{
+    events.massEvent={active:true, until:elapsed+30};
+    log('Evento masivo iniciado en el estadio');
+  });
+  document.getElementById('heatwaveBtn').addEventListener('click',()=>{
+    events.heatwave={active:true, until:elapsed+30};
+    log('Ola de calor afectando a la ciudad');
+  });
+  document.getElementById('optimizeBtn').addEventListener('click',()=>{
+    events.optimize={active:true, until:elapsed+20};
+    log('Optimización de semáforos aplicada');
+  });
+  document.getElementById('resetEventsBtn').addEventListener('click',()=>{
+    for(const ev in events){events[ev].active=false;}
+    log('Eventos restablecidos');
+  });
+  </script>
+</body>
+</html>
